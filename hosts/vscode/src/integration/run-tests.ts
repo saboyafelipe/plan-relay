@@ -16,7 +16,7 @@ import { join, resolve } from 'node:path';
 import { runTests } from '@vscode/test-electron';
 import { PLUGIN_ID } from '../agents/claude-code/plugin-state';
 
-/** The VS Code version for the test: the minimum of `engines.vscode` (`^1.106.0` → `1.106.0`). */
+/** The VS Code version for the test: the minimum of `engines.vscode` (`^1.146.0` → `1.146.0`). */
 function minimumVersion(extension: string): string {
   const manifest = JSON.parse(readFileSync(join(extension, 'package.json'), 'utf8')) as { engines: { vscode: string } };
   const versionText = /^\^(\d+\.\d+\.\d+)$/.exec(manifest.engines.vscode)?.[1];

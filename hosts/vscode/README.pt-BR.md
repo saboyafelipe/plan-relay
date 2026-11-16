@@ -10,6 +10,7 @@ Um painel do VS Code para os planos de trabalho que agentes de código executam 
 
 ## Pré-requisitos
 
+- **VS Code 1.146 ou mais recente.**
 - **Claude Code** com o plugin `plan-relay`. O painel oferece instalar o plugin quando ele falta (comando «Plan Relay: Instalar o plugin»).
 - **`jq`** no PATH. O rodapé do painel avisa quando falta.
 - **No Windows,** Git Bash ou WSL: os scripts dos planos são `sh`.
