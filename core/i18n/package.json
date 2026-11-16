@@ -1,0 +1,14 @@
+{
+  "name": "@plan-relay/i18n",
+  "version": "0.0.0",
+  "private": true,
+  "description": "The displayed texts of plan-relay, by language; no host API and no Node API.",
+  "license": "MIT",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./en.json": "./en.json",
+    "./pt-BR.json": "./pt-BR.json",
+    "./x-test.json": "./x-test.json"
+  }
+}

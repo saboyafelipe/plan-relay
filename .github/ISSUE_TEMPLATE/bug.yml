@@ -1,0 +1,65 @@
+name: Bug
+description: Something in the plugin or the extension does not work as it should. (Issues in Portuguese are welcome too.)
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting. A security flaw does **not** go here: follow SECURITY.md (private report in the Security tab).
+        Do not paste paths from your machine, company or client names, or secrets. Issues in Portuguese are welcome too.
+  - type: input
+    id: extension-version
+    attributes:
+      label: VS Code extension version
+      description: In Extensions, on the Plan Relay page. "not using it" if the bug is only in the plugin.
+      placeholder: 0.1.0
+    validations:
+      required: true
+  - type: input
+    id: plugin-version
+    attributes:
+      label: Plugin version
+      description: "`claude plugin list` shows the plan-relay version. \"not using it\" if the bug is only in the extension."
+      placeholder: 0.1.0
+    validations:
+      required: true
+  - type: dropdown
+    id: agent
+    attributes:
+      label: Coding agent
+      options:
+        - Claude Code (CLI)
+        - Claude Code (VS Code extension)
+        - Other
+    validations:
+      required: true
+  - type: input
+    id: system
+    attributes:
+      label: System
+      description: Operating system and shell (on Windows, Git Bash or WSL).
+      placeholder: macOS 15, zsh
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. ...
+        2. ...
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What you expected
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: What happened
+      description: The error message, the output of the "Plan Relay" channel or of `/plan-relay:check`, if it helps.
+    validations:
+      required: true

@@ -1,0 +1,186 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/saboyafelipe/plan-relay/main/core/contract/schema/status.schema.json",
+  "title": "status.sh --json (contract 1)",
+  "description": "Live state of a plan, computed from the task headers. Consumers ignore keys they do not know. See core/contract/contract.md for how each value is computed.",
+  "type": "object",
+  "required": ["contract", "name", "language", "profile", "scripts_version", "progress", "phases", "tasks", "parallel", "run"],
+  "properties": {
+    "contract": { "const": 1 },
+    "name": {
+      "description": "Name of the plan folder.",
+      "type": "string"
+    },
+    "language": {
+      "description": "language from plan.json, pt-BR when absent. Passed through as text.",
+      "type": "string"
+    },
+    "profile": {
+      "description": "profile from plan.json, full when absent. Passed through as text.",
+      "type": "string"
+    },
+    "scripts_version": {
+      "description": "The '# scripts_version: <N>' stamp of the status.sh that produced this output, or null when the stamp is missing.",
+      "type": ["integer", "null"],
+      "minimum": 1
+    },
+    "progress": {
+      "type": "object",
+      "required": ["done", "total", "pct", "in_progress", "draft"],
+      "properties": {
+        "done": { "$ref": "#/$defs/count" },
+        "total": {
+          "description": "Tasks that pass the filter, minus the cancelled and abandoned ones.",
+          "$ref": "#/$defs/count"
+        },
+        "pct": {
+          "description": "round(100 * done / total), halves rounded up; 0 when total is 0.",
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "in_progress": { "$ref": "#/$defs/count" },
+        "draft": { "$ref": "#/$defs/count" }
+      },
+      "additionalProperties": true
+    },
+    "phases": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/phase" }
+    },
+    "tasks": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/task" }
+    },
+    "parallel": {
+      "description": "Ids of available tasks suggested for parallel sessions.",
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "run": {
+      "description": "Latest autopilot log under notes/, or null when there is none.",
+      "oneOf": [
+        { "type": "null" },
+        {
+          "type": "object",
+          "required": ["log", "open", "handoff"],
+          "properties": {
+            "log": {
+              "description": "Path relative to the plan folder: notes/run-YYYY-MM-DD[-N].md.",
+              "type": "string"
+            },
+            "open": {
+              "description": "true while the log has no line starting with '## Closing'.",
+              "type": "boolean"
+            },
+            "handoff": {
+              "description": "Title of the last '## Handoff' line of the log, without '## Handoff', the separator and surrounding spaces; only 'YYYY-MM-DD HH:MM' when it starts with that stamp; null when the log has none. Since scripts_version 8; readers treat a missing key as null.",
+              "type": ["string", "null"]
+            }
+          },
+          "additionalProperties": true
+        }
+      ]
+    }
+  },
+  "additionalProperties": true,
+  "$defs": {
+    "count": { "type": "integer", "minimum": 0 },
+    "phase": {
+      "type": "object",
+      "required": ["dir", "title", "done", "total", "in_progress"],
+      "properties": {
+        "dir": {
+          "description": "Phase folder, phase-<n>-<slug>.",
+          "type": "string"
+        },
+        "title": {
+          "description": "First '# ' line of PHASE.md without the '# '; the folder name when there is none.",
+          "type": "string"
+        },
+        "done": { "$ref": "#/$defs/count" },
+        "total": {
+          "description": "Tasks of the phase that pass the filter, minus the cancelled and abandoned ones.",
+          "$ref": "#/$defs/count"
+        },
+        "in_progress": { "$ref": "#/$defs/count" },
+        "abandoned": {
+          "description": "Present, and true, only when every task of the phase (the whole phase, not only the filtered tasks) is cancelled or abandoned and at least one is abandoned. Since scripts_version 9; readers treat a missing key as false.",
+          "const": true
+        }
+      },
+      "additionalProperties": true
+    },
+    "task": {
+      "type": "object",
+      "required": ["id", "title", "status", "type", "track", "repos", "blocked_by", "waiting_on", "group", "unblocks", "started", "finished", "next_step", "file"],
+      "properties": {
+        "id": {
+          "description": "Task id, F<n>-<nn>[.<k>…], from the file name.",
+          "type": "string",
+          "minLength": 1
+        },
+        "title": { "type": "string" },
+        "status": {
+          "description": "The Status: value as written (empty when absent). Values outside draft, ready, in-progress, done, cancelled, abandoned put the task in the invalid group.",
+          "type": "string"
+        },
+        "type": {
+          "description": "The Type: value as written; empty when absent.",
+          "type": "string"
+        },
+        "track": {
+          "description": "The Track: value as written; empty when absent.",
+          "type": "string"
+        },
+        "tier": {
+          "description": "The Tier: value normalized: junior or mid when written exactly so, senior otherwise. Written by status.sh since scripts version 6; absent in output from older scripts, where it counts as senior.",
+          "enum": ["junior", "mid", "senior"]
+        },
+        "repos": { "$ref": "#/$defs/strings" },
+        "blocked_by": { "$ref": "#/$defs/strings" },
+        "waiting_on": {
+          "description": "Only in the blocked group: the blockers that are not done; an id that matches no task file gets the suffix (?).",
+          "$ref": "#/$defs/strings"
+        },
+        "group": {
+          "enum": ["in-progress", "available", "owner", "blocked", "draft", "done", "cancelled", "abandoned", "invalid"]
+        },
+        "unblocks": {
+          "description": "How many tasks that are not done, cancelled or abandoned cite this id in Blocked by:, over the whole plan (the filter does not apply).",
+          "$ref": "#/$defs/count"
+        },
+        "started": { "type": ["string", "null"] },
+        "finished": { "type": ["string", "null"] },
+        "next_step": {
+          "description": "Text after the marker on the last line below the title that starts with 'Next step:' (after optional spaces and an optional '- ' or '* '), or null.",
+          "type": ["string", "null"]
+        },
+        "file": {
+          "description": "Path of the task file relative to the plan folder.",
+          "type": "string"
+        },
+        "replaced_by": {
+          "description": "The Replaced by: value (the task that took this one's place). Present only when the header has the key with a non-empty value. Since scripts_version 9; readers treat a missing key as null.",
+          "type": "string",
+          "minLength": 1
+        },
+        "given_up_by": {
+          "description": "The Given up by: value (owner, on the root of a give-up). Present only when the header has the key with a non-empty value. Since scripts_version 9; readers treat a missing key as null.",
+          "type": "string",
+          "minLength": 1
+        },
+        "given_up_with": {
+          "description": "The Given up with: value (the id of the root the task fell with). Present only when the header has the key with a non-empty value. Since scripts_version 9; readers treat a missing key as null.",
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "additionalProperties": true
+    },
+    "strings": {
+      "type": "array",
+      "items": { "type": "string" }
+    }
+  }
+}

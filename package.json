@@ -1,0 +1,29 @@
+{
+  "name": "plan-relay-workspace",
+  "private": true,
+  "description": "The npm workspaces of plan-relay: the host-free core packages and the VS Code extension.",
+  "license": "MIT",
+  "engines": {
+    "node": "^24"
+  },
+  "workspaces": [
+    "core/i18n",
+    "core/reader",
+    "core/panel",
+    "hosts/vscode"
+  ],
+  "scripts": {
+    "typecheck": "node node_modules/typescript-7/bin/tsc -b",
+    "lint": "eslint hosts/vscode/src core/reader core/panel core/i18n",
+    "format": "prettier --write hosts/vscode/src hosts/vscode/media \"hosts/vscode/*.mjs\" core/reader core/panel core/i18n \"*.mjs\" \"*.mts\"",
+    "format:check": "prettier --check hosts/vscode/src hosts/vscode/media \"hosts/vscode/*.mjs\" core/reader core/panel core/i18n \"*.mjs\" \"*.mts\"",
+    "test": "vitest run",
+    "coverage": "vitest run --coverage",
+    "build": "npm run build --workspace=hosts/vscode",
+    "test:integration": "npm run test:integration --workspace=hosts/vscode",
+    "package": "npm run package --workspace=hosts/vscode"
+  },
+  "overrides": {
+    "minimatch": "^11.0.1"
+  }
+}

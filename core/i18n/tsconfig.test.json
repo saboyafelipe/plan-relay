@@ -1,0 +1,14 @@
+{
+  // The tests run in Node under vitest (globals), apart from the package code.
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "composite": true,
+    "emitDeclarationOnly": true,
+    "rootDir": ".",
+    "outDir": "out/test",
+    "types": ["node", "vitest/globals"]
+  },
+  "files": ["x-test.json"],
+  "include": ["src/**/*.test.ts"],
+  "references": [{ "path": "." }]
+}

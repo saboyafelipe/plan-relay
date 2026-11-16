@@ -1,0 +1,35 @@
+{
+  "contract": 1,
+  "name": "skipped",
+  "language": "pt-BR",
+  "profile": "full",
+  "scripts_version": 6,
+  "progress": {"done": 1, "total": 3, "pct": 33, "in_progress": 0, "draft": 0},
+  "phases": [
+    {"dir": "phase-1-start", "title": "Start", "done": 0, "total": 1, "in_progress": 0},
+    {"dir": "phase-2-next", "title": "phase-2-next", "done": 1, "total": 2, "in_progress": 0},
+    {"dir": "phase-3-dropped", "title": "phase-3-dropped", "done": 0, "total": 0, "in_progress": 0}
+  ],
+  "tasks": [
+    {"id": "F1-01", "title": "Dropped first", "status": "cancelled", "type": "code", "track": "core", "tier": "senior",
+     "repos": [], "blocked_by": [], "waiting_on": [], "group": "cancelled", "unblocks": 0,
+     "started": null, "finished": null, "next_step": null, "file": "phase-1-start/F1-01-dropped.md"},
+    {"id": "F1-02", "title": "Dropped second", "status": "cancelled", "type": "code", "track": "core", "tier": "senior",
+     "repos": [], "blocked_by": [], "waiting_on": [], "group": "cancelled", "unblocks": 0,
+     "started": null, "finished": null, "next_step": null, "file": "phase-1-start/F1-02-dropped.md"},
+    {"id": "F1-03", "title": "Kept", "status": "ready", "type": "code", "track": "core", "tier": "senior",
+     "repos": [], "blocked_by": [], "waiting_on": [], "group": "available", "unblocks": 1,
+     "started": null, "finished": null, "next_step": null, "file": "phase-1-start/F1-03-kept.md"},
+    {"id": "F2-01", "title": "Done", "status": "done", "type": "code", "track": "core", "tier": "senior",
+     "repos": [], "blocked_by": [], "waiting_on": [], "group": "done", "unblocks": 0,
+     "started": null, "finished": null, "next_step": null, "file": "phase-2-next/F2-01-done.md"},
+    {"id": "F2-02", "title": "Waits", "status": "ready", "type": "code", "track": "core", "tier": "senior",
+     "repos": [], "blocked_by": ["F1-03"], "waiting_on": ["F1-03"], "group": "blocked", "unblocks": 0,
+     "started": null, "finished": null, "next_step": null, "file": "phase-2-next/F2-02-waits.md"},
+    {"id": "F3-01", "title": "Gone", "status": "cancelled", "type": "code", "track": "core", "tier": "senior",
+     "repos": [], "blocked_by": [], "waiting_on": [], "group": "cancelled", "unblocks": 0,
+     "started": null, "finished": null, "next_step": null, "file": "phase-3-dropped/F3-01-gone.md"}
+  ],
+  "parallel": ["F1-03"],
+  "run": null
+}

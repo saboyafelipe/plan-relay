@@ -1,0 +1,21 @@
+{
+  "contract": 1,
+  "name": "filtered",
+  "language": "pt-BR",
+  "profile": "full",
+  "scripts_version": 1,
+  "progress": {"done": 1, "total": 2, "pct": 50, "in_progress": 0, "draft": 0},
+  "phases": [
+    {"dir": "phase-1-base", "title": "Base", "done": 1, "total": 2, "in_progress": 0}
+  ],
+  "tasks": [
+    {"id": "F1-01", "title": "Core done", "status": "done", "type": "code", "track": "core", "tier": "senior",
+     "repos": [], "blocked_by": [], "waiting_on": [], "group": "done", "unblocks": 1,
+     "started": null, "finished": null, "next_step": null, "file": "phase-1-base/F1-01-core.md"},
+    {"id": "F1-03", "title": "Core after UI", "status": "ready", "type": "code", "track": "core", "tier": "senior",
+     "repos": [], "blocked_by": ["F1-02"], "waiting_on": ["F1-02"], "group": "blocked", "unblocks": 1,
+     "started": null, "finished": null, "next_step": null, "file": "phase-1-base/F1-03-core.md"}
+  ],
+  "parallel": [],
+  "run": null
+}

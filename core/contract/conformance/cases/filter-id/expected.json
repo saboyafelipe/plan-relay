@@ -1,0 +1,24 @@
+{
+  "contract": 1,
+  "name": "picks",
+  "language": "pt-BR",
+  "profile": "full",
+  "scripts_version": 1,
+  "progress": {"done": 0, "total": 3, "pct": 0, "in_progress": 0, "draft": 0},
+  "phases": [
+    {"dir": "phase-1-base", "title": "Base", "done": 0, "total": 3, "in_progress": 0}
+  ],
+  "tasks": [
+    {"id": "F1-03", "title": "Parser", "status": "ready", "type": "code", "track": "core", "tier": "senior",
+     "repos": [], "blocked_by": ["F1-01"], "waiting_on": [], "group": "available", "unblocks": 1,
+     "started": null, "finished": null, "next_step": null, "file": "phase-1-base/F1-03-parser.md"},
+    {"id": "F1-03.1", "title": "Pick the format", "status": "ready", "type": "decision", "track": "core", "tier": "senior",
+     "repos": [], "blocked_by": ["F1-01"], "waiting_on": [], "group": "owner", "unblocks": 1,
+     "started": null, "finished": null, "next_step": null, "file": "phase-1-base/F1-03.1-pick-format.md"},
+    {"id": "F1-04", "title": "Docs of the parser", "status": "ready", "type": "code", "track": "F1-03", "tier": "senior",
+     "repos": [], "blocked_by": ["F1-01"], "waiting_on": [], "group": "available", "unblocks": 1,
+     "started": null, "finished": null, "next_step": null, "file": "phase-1-base/F1-04-docs.md"}
+  ],
+  "parallel": ["F1-03", "F1-04"],
+  "run": null
+}

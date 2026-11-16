@@ -1,0 +1,34 @@
+{
+  "contract": 1,
+  "name": "dropped",
+  "language": "pt-BR",
+  "profile": "full",
+  "scripts_version": 9,
+  "progress": {"done": 1, "total": 1, "pct": 100, "in_progress": 0, "draft": 0},
+  "phases": [
+    {"dir": "phase-1-kept", "title": "Kept", "done": 1, "total": 1, "in_progress": 0},
+    {"dir": "phase-2-gone", "title": "Gone", "done": 0, "total": 0, "in_progress": 0, "abandoned": true},
+    {"dir": "phase-3-cancelled", "title": "phase-3-cancelled", "done": 0, "total": 0, "in_progress": 0}
+  ],
+  "tasks": [
+    {"id": "F1-01", "title": "Done", "status": "done", "type": "code", "track": "core", "tier": "senior",
+     "repos": [], "blocked_by": [], "waiting_on": [], "group": "done", "unblocks": 0,
+     "started": null, "finished": null, "next_step": null, "file": "phase-1-kept/F1-01-done.md"},
+    {"id": "F1-02", "title": "Root", "status": "abandoned", "type": "code", "track": "core", "tier": "senior",
+     "repos": [], "blocked_by": [], "waiting_on": [], "group": "abandoned", "unblocks": 0,
+     "started": null, "finished": null, "next_step": null, "file": "phase-1-kept/F1-02-root.md",
+     "given_up_by": "owner"},
+    {"id": "F2-01", "title": "Child", "status": "abandoned", "type": "code", "track": "core", "tier": "senior",
+     "repos": [], "blocked_by": ["F1-02"], "waiting_on": [], "group": "abandoned", "unblocks": 0,
+     "started": null, "finished": null, "next_step": null, "file": "phase-2-gone/F2-01-child.md",
+     "given_up_with": "F1-02"},
+    {"id": "F2-02", "title": "Cancelled before", "status": "cancelled", "type": "code", "track": "core", "tier": "senior",
+     "repos": [], "blocked_by": [], "waiting_on": [], "group": "cancelled", "unblocks": 0,
+     "started": null, "finished": null, "next_step": null, "file": "phase-2-gone/F2-02-cancelled.md"},
+    {"id": "F3-01", "title": "Only cancelled", "status": "cancelled", "type": "code", "track": "core", "tier": "senior",
+     "repos": [], "blocked_by": [], "waiting_on": [], "group": "cancelled", "unblocks": 0,
+     "started": null, "finished": null, "next_step": null, "file": "phase-3-cancelled/F3-01-cancelled.md"}
+  ],
+  "parallel": [],
+  "run": null
+}

@@ -1,0 +1,50 @@
+# Dependabot: no CI dependency changes without a PR.
+#
+# - npm at /: the npm workspaces (core/i18n, core/reader, core/panel and hosts/vscode) share a single
+#   package-lock.json, at the root; the devDependencies are the extension's (hosts/vscode/package.json).
+#   The development ones go in one PR grouped per week. The "typescript" →
+#   @typescript/typescript6 alias exists because typescript-eslint does not accept TypeScript 7 yet;
+#   once it does, the alias goes away (docs/development.md).
+# - npm at /tools/publish: the lockfile of vsce and ovsx, the only packages the publishing jobs of
+#   release.yml install. Both are exact versions; one PR per week for the two.
+# - npm at /tools/claude-cli: the lockfile of the Claude Code CLI that the plugin-validate job of
+#   ci.yml installs. An exact version; its PR is the moment to run the three validate commands
+#   (docs/development.md, "CLI version in CI").
+# - github-actions at /: the actions in .github/workflows/, pinned by SHA with the tag in a comment;
+#   Dependabot updates the SHA and the comment together.
+#
+# Not seen by Dependabot, bumped by hand: the linters of tools/ci-tools.sh (version and sha256
+# together) and the runner images (ubuntu-24.04, macos-26).
+
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+    groups:
+      development:
+        dependency-type: development
+
+  - package-ecosystem: npm
+    directory: /tools/publish
+    schedule:
+      interval: weekly
+    groups:
+      publish:
+        patterns:
+          - '*'
+
+  - package-ecosystem: npm
+    directory: /tools/claude-cli
+    schedule:
+      interval: weekly
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    groups:
+      actions:
+        patterns:
+          - '*'

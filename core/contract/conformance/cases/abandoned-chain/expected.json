@@ -1,0 +1,37 @@
+{
+  "contract": 1,
+  "name": "chain",
+  "language": "pt-BR",
+  "profile": "full",
+  "scripts_version": 9,
+  "progress": {"done": 2, "total": 3, "pct": 67, "in_progress": 0, "draft": 0},
+  "phases": [
+    {"dir": "phase-1-base", "title": "Base", "done": 1, "total": 2, "in_progress": 0},
+    {"dir": "phase-2-next", "title": "Next", "done": 1, "total": 1, "in_progress": 0}
+  ],
+  "tasks": [
+    {"id": "F1-01", "title": "Done", "status": "done", "type": "code", "track": "core", "tier": "senior",
+     "repos": [], "blocked_by": [], "waiting_on": [], "group": "done", "unblocks": 0,
+     "started": null, "finished": null, "next_step": null, "file": "phase-1-base/F1-01-done.md"},
+    {"id": "F1-02", "title": "Root", "status": "abandoned", "type": "human", "track": "core", "tier": "senior",
+     "repos": [], "blocked_by": ["F1-01"], "waiting_on": [], "group": "abandoned", "unblocks": 0,
+     "started": null, "finished": null, "next_step": null, "file": "phase-1-base/F1-02-root.md",
+     "given_up_by": "owner"},
+    {"id": "F1-03", "title": "Alive", "status": "ready", "type": "code", "track": "core", "tier": "senior",
+     "repos": [], "blocked_by": [], "waiting_on": [], "group": "available", "unblocks": 0,
+     "started": null, "finished": null, "next_step": null, "file": "phase-1-base/F1-03-alive.md"},
+    {"id": "F2-01", "title": "Child", "status": "abandoned", "type": "code", "track": "core", "tier": "senior",
+     "repos": [], "blocked_by": ["F1-02"], "waiting_on": [], "group": "abandoned", "unblocks": 0,
+     "started": null, "finished": null, "next_step": null, "file": "phase-2-next/F2-01-child.md",
+     "given_up_with": "F1-02"},
+    {"id": "F2-02", "title": "Grandchild", "status": "abandoned", "type": "code", "track": "core", "tier": "senior",
+     "repos": [], "blocked_by": ["F2-01"], "waiting_on": [], "group": "abandoned", "unblocks": 0,
+     "started": null, "finished": null, "next_step": null, "file": "phase-2-next/F2-02-grandchild.md",
+     "given_up_with": "F1-02"},
+    {"id": "F2-03", "title": "Done", "status": "done", "type": "code", "track": "core", "tier": "senior",
+     "repos": [], "blocked_by": [], "waiting_on": [], "group": "done", "unblocks": 0,
+     "started": null, "finished": null, "next_step": null, "file": "phase-2-next/F2-03-done.md"}
+  ],
+  "parallel": ["F1-03"],
+  "run": null
+}

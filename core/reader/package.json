@@ -1,0 +1,16 @@
+{
+  "name": "@plan-relay/reader",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Discovers the plans of a workspace and computes their status without running sh; no host API.",
+  "license": "MIT",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./node": "./src/node.ts",
+    "./testing": "./src/testing/fixture.ts"
+  },
+  "dependencies": {
+    "@plan-relay/i18n": "0.0.0"
+  }
+}

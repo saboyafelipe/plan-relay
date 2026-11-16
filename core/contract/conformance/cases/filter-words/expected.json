@@ -1,0 +1,18 @@
+{
+  "contract": 1,
+  "name": "filtered",
+  "language": "pt-BR",
+  "profile": "full",
+  "scripts_version": 1,
+  "progress": {"done": 0, "total": 1, "pct": 0, "in_progress": 0, "draft": 1},
+  "phases": [
+    {"dir": "phase-2-next", "title": "Next", "done": 0, "total": 1, "in_progress": 0}
+  ],
+  "tasks": [
+    {"id": "F2-01", "title": "Later UI", "status": "draft", "type": "code", "track": "ui", "tier": "senior",
+     "repos": [], "blocked_by": ["F1-03"], "waiting_on": [], "group": "draft", "unblocks": 0,
+     "started": null, "finished": null, "next_step": null, "file": "phase-2-next/F2-01-ui.md"}
+  ],
+  "parallel": [],
+  "run": null
+}

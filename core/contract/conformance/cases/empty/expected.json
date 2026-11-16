@@ -1,0 +1,12 @@
+{
+  "contract": 1,
+  "name": "empty",
+  "language": "en",
+  "profile": "full",
+  "scripts_version": 1,
+  "progress": {"done": 0, "total": 0, "pct": 0, "in_progress": 0, "draft": 0},
+  "phases": [],
+  "tasks": [],
+  "parallel": [],
+  "run": {"log": "notes/run-2026-11-14.md", "open": true, "handoff": null}
+}

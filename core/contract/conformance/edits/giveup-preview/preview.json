@@ -1,0 +1,9 @@
+{"root": "F1-02",
+ "falls": [
+   {"id": "F1-02", "title": "Prove on Windows", "status": "ready", "phase": "phase-1-base", "parent": null, "depth": 0, "also_depends_on": []},
+   {"id": "F2-01", "title": "Installer", "status": "draft", "phase": "phase-2-win", "parent": "F1-02", "depth": 1, "also_depends_on": []},
+   {"id": "F2-02", "title": "Signed installer", "status": "ready", "phase": "phase-2-win", "parent": "F2-01", "depth": 2, "also_depends_on": ["F1-03"]},
+   {"id": "F3-01", "title": "Release notes", "status": "ready", "phase": "phase-3-after", "parent": "F2-02", "depth": 3, "also_depends_on": []},
+   {"id": "F2-03", "title": "Windows docs", "status": "ready", "phase": "phase-2-win", "parent": "F1-02", "depth": 1, "also_depends_on": []}
+ ],
+ "abandoned_phases": ["phase-2-win"]}

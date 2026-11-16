@@ -1,0 +1,15 @@
+{
+  // Solution: `tsc -b` builds every project below in dependency order. Each core package is a
+  // composite project that only sees its own files and the packages it references, so a core file
+  // that imports from hosts/ or from an undeclared package fails to compile.
+  "files": [],
+  "references": [
+    { "path": "core/i18n" },
+    { "path": "core/i18n/tsconfig.test.json" },
+    { "path": "core/reader" },
+    { "path": "core/reader/tsconfig.test.json" },
+    { "path": "core/panel" },
+    { "path": "core/panel/tsconfig.test.json" },
+    { "path": "hosts/vscode" }
+  ]
+}

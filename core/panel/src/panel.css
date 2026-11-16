@@ -1,0 +1,1588 @@
+/* Only --pr-* variables, which the host defines from its theme (in VS Code: hosts/vscode/media/panel.css). */
+
+/* The scrollbar gutter always stays reserved: without it, opening a phase made the page scroll,
+   the card lost the width of the bar and changed shape (the @container queries at 260 and 280 px). */
+html {
+  scrollbar-gutter: stable;
+}
+
+body {
+  margin: 0;
+  padding: 8px 12px;
+  font-family: var(--pr-font);
+  font-size: var(--pr-font-size);
+  color: var(--pr-fg);
+  background: var(--pr-bg);
+}
+
+button {
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+}
+
+button:focus-visible {
+  outline: 1px solid var(--pr-focus);
+  outline-offset: 1px;
+}
+
+code {
+  font-family: var(--pr-mono-font);
+  color: var(--pr-code-fg);
+}
+
+/* The live region the page keeps beside the redrawn content: read by screen readers, not shown (the same text is
+   already on screen, in the notice, the «n of m» or the footer). */
+/* Read by a screen reader, not drawn: the live region and the text that says what a colour says (`.vh`). */
+.vh,
+.live {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+.top {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 8px;
+}
+
+.plugin {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.plugin-status {
+  color: var(--pr-muted-fg);
+}
+
+.plugin-error .plugin-status {
+  color: var(--pr-error-fg);
+}
+
+.plugin-not-installed .plugin-status {
+  color: var(--pr-fg);
+}
+
+.host-notice {
+  margin: 0;
+  color: var(--pr-fg);
+}
+
+.empty,
+.sec-num:not(.pc) {
+  color: var(--pr-muted-fg);
+}
+
+.action {
+  padding: 2px 8px;
+  border: 1px solid var(--pr-button-border);
+  border-radius: 2px;
+  color: var(--pr-button-secondary-fg);
+  background: var(--pr-button-secondary-bg);
+}
+
+.action:hover {
+  background: var(--pr-button-secondary-hover-bg);
+}
+
+.action:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.action:disabled:hover {
+  background: var(--pr-button-secondary-bg);
+}
+
+.plan {
+  border: 1px solid var(--pr-border);
+  border-radius: 4px;
+  margin-bottom: 8px;
+  container-type: inline-size;
+}
+
+.header {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-areas: 'name marks';
+  align-items: center;
+  gap: 4px 8px;
+  /* In Now and in Ideas the top is a <div> (content-box): without border-box, the padding overflowed the card by 16 px. */
+  box-sizing: border-box;
+  width: 100%;
+  padding: 6px 8px;
+  border: none;
+  text-align: left;
+  background: transparent;
+}
+
+.header:hover {
+  background-image: linear-gradient(var(--pr-hover-bg), var(--pr-hover-bg));
+}
+
+/* On scroll, the plan name stays pinned right below the filter bar until the next card takes its place.
+   Only the strip with the name and the marks: with the bar and the legend, at ~260 px what stays pinned would eat half the view. Opaque background
+   (the hover paints over it, in `background-image`); `z-index` below the bar one (2) and the «⋯» menu one (10). The page
+   measures the tab row and the bar and writes `--pr-tabs-height` and `--pr-filters-height` on the root. */
+.plan > .header {
+  position: sticky;
+  top: calc(var(--pr-tabs-height, 0px) + var(--pr-filters-height, 0px));
+  z-index: 1;
+  border-radius: 4px 4px 0 0;
+  background-color: var(--pr-bg);
+}
+
+.name {
+  grid-area: name;
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+/* The «condução aberta» pill and the badge, together on the right of the name. */
+.marks {
+  grid-area: marks;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 4px;
+}
+
+.badge {
+  padding: 0 6px;
+  border-radius: 8px;
+  font-size: 0.9em;
+  color: var(--pr-badge-fg);
+  background: var(--pr-badge-bg);
+}
+
+.error {
+  margin: 0;
+  padding: 0 8px 6px;
+  color: var(--pr-error-fg);
+}
+
+/* The redrawn content fills at least the view (minus the body padding), so the tab panel can grow and push the
+   environment footer to the very bottom even when the list is short. */
+.content {
+  display: flex;
+  flex-direction: column;
+  min-height: calc(100vh - 16px);
+}
+
+.tab-panel {
+  flex: 1 0 auto;
+}
+
+/* The environment footer: what is missing on the machine, at the bottom of the view with a short list and after
+   the cards with a long one (it does not follow the scroll). The ids break at any point so they do not widen the
+   narrow panel. */
+.environment {
+  margin-top: 12px;
+  padding-top: 6px;
+  border-top: 1px solid var(--pr-border);
+  overflow-wrap: anywhere;
+}
+
+.environment p {
+  margin: 0 0 4px;
+}
+
+.environment-missing {
+  color: var(--pr-error-fg);
+}
+
+.environment-note,
+.environment-hint {
+  color: var(--pr-muted-fg);
+}
+
+.body {
+  padding: 0 8px 8px;
+}
+
+/* Narrow panel (measured on the card, not on the window): the badge drops below the name, so the name has the
+   full width, and the phases lose the counters so the title shows at least «Fase N». */
+@container (max-width: 260px) {
+  .header {
+    grid-template-areas: 'name' 'marks';
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .marks {
+    justify-self: start;
+  }
+
+  .sec-summary .badges {
+    display: none;
+  }
+}
+
+.id {
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: var(--pr-link-fg);
+  font-family: var(--pr-mono-font);
+}
+
+.id:hover {
+  color: var(--pr-link-active-fg);
+  text-decoration: underline;
+}
+
+/* Visual base: icons, buttons, chips, pills, counters, stacked bar and ring.
+   Status colors come from --pr-state-*; what is gray uses --pr-muted-fg and what is a failure uses --pr-error-fg. */
+.ic {
+  flex: none;
+  width: 16px;
+  height: 16px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* Filled parts of an icon (play, ellipsis, the half moon of «in progress») and the halo of «done». */
+.ic .fill {
+  fill: currentColor;
+  stroke: none;
+}
+
+.ic .halo {
+  fill: currentColor;
+  stroke: none;
+  opacity: 0.2;
+}
+
+.ic-status {
+  width: 14px;
+  height: 14px;
+}
+
+.status-done,
+.status-available {
+  color: var(--pr-state-ok);
+}
+
+.status-in-progress {
+  color: var(--pr-state-run);
+}
+
+.status-blocked {
+  color: var(--pr-state-wait);
+}
+
+.status-owner {
+  color: var(--pr-state-owner);
+}
+
+.status-draft,
+.status-cancelled,
+.status-abandoned {
+  color: var(--pr-muted-fg);
+}
+
+.status-invalid {
+  color: var(--pr-error-fg);
+}
+
+/* The bulb of an idea takes the status color: open in the text color, refining in blue, ready in green,
+   mapped dimmed and invalid in red. It applies in the section header, in the counter and in the chip dot. */
+.idea-color-open {
+  color: var(--pr-fg);
+}
+
+.idea-color-refining {
+  color: var(--pr-state-run);
+}
+
+.idea-color-ready {
+  color: var(--pr-state-ok);
+}
+
+.idea-color-mapped {
+  color: var(--pr-muted-fg);
+}
+
+.idea-color-invalid {
+  color: var(--pr-error-fg);
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  height: 24px;
+  padding: 0 10px;
+  border: 1px solid var(--pr-button-border);
+  border-radius: 4px;
+  font-size: 0.92em;
+  white-space: nowrap;
+  color: var(--pr-button-secondary-fg);
+  background: var(--pr-button-secondary-bg);
+}
+
+.btn:hover {
+  background: var(--pr-button-secondary-hover-bg);
+}
+
+.btn.pri {
+  color: var(--pr-button-fg);
+  background: var(--pr-button-bg);
+}
+
+.btn.pri:hover {
+  background: var(--pr-button-hover-bg);
+}
+
+.btn.sm {
+  height: 20px;
+  padding: 0 7px;
+  font-size: 0.85em;
+}
+
+.btn .ic {
+  width: 14px;
+  height: 14px;
+}
+
+.btn:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+/* An icon-only button, in the text color; the background appears on hover and when on (.on). */
+.ib {
+  display: inline-grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: none;
+  border-radius: 4px;
+  background: transparent;
+}
+
+.ib:hover {
+  background: var(--pr-hover-bg);
+}
+
+.ib.on {
+  background: var(--pr-selected-bg);
+  color: var(--pr-selected-fg);
+}
+
+.btn:focus-visible,
+.ib:focus-visible,
+.chip:focus-visible {
+  outline: 1px solid var(--pr-focus);
+  outline-offset: 1px;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  height: 22px;
+  padding: 0 8px;
+  border: 1px solid var(--pr-border);
+  border-radius: 11px;
+  font-size: 0.85em;
+  color: var(--pr-muted-fg);
+  background: transparent;
+}
+
+.chip:hover {
+  color: var(--pr-fg);
+  background: var(--pr-hover-bg);
+}
+
+.chip.on {
+  color: var(--pr-selected-fg);
+  border-color: var(--pr-focus);
+  background: var(--pr-selected-bg);
+}
+
+/* The status dot inside a chip or pill: it takes the color of .status-* or of the text. */
+.chip i,
+.pill i {
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 1px 8px;
+  border: 1px solid var(--pr-border);
+  border-radius: 10px;
+  font-size: 0.85em;
+  white-space: nowrap;
+  color: var(--pr-fg);
+}
+
+.counter {
+  display: inline-block;
+  min-width: 1.6em;
+  padding: 0 6px;
+  border-radius: 9px;
+  font-size: 0.8em;
+  line-height: 1.6;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+  color: var(--pr-badge-fg);
+  background: var(--pr-badge-bg);
+}
+
+/* The SVG of stackedBar(): it stretches to the row width and the `rect` of each segment carries the status color. */
+.stacked-bar {
+  display: block;
+  width: 100%;
+  height: 6px;
+  border-radius: 3px;
+  overflow: hidden;
+  background: var(--pr-track-bg);
+}
+
+.seg-ok {
+  fill: var(--pr-state-ok);
+}
+
+.seg-run {
+  fill: var(--pr-state-run);
+}
+
+.seg-wait {
+  fill: var(--pr-state-wait);
+}
+
+.seg-owner {
+  fill: var(--pr-state-owner);
+}
+
+.seg-draft {
+  fill: var(--pr-muted-fg);
+}
+
+/* What is available does not paint: the bar background stays, so the proportions apply to the whole plan. */
+.seg-free {
+  fill: transparent;
+}
+
+.ring {
+  width: 12px;
+  height: 12px;
+  fill: none;
+  stroke-width: 2;
+}
+
+/* The track is the dimmed arc itself, as in the prototype: `--pr-track-bg` almost vanishes in the dark theme. */
+.ring-background {
+  stroke: var(--pr-progress-bg);
+  stroke-opacity: 0.25;
+}
+
+.ring-arc {
+  stroke: var(--pr-progress-bg);
+}
+
+/* Now | Plans | Ideas tabs in a centered segmented control: icon, label and counter; the
+   selected one with background and outline. The row stays pinned to the top on scroll, opaque; the filter bar pins right
+   below it (`--pr-tabs-height`, which the page measures: the row got taller and the measure follows). `z-index` above the
+   bar one (2) and below the «⋯» menu (10). */
+.tabs {
+  position: sticky;
+  top: 0;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  margin: 0 0 6px;
+  padding: 6px 4px;
+  background-color: var(--pr-bg);
+  border-bottom: 1px solid var(--pr-border);
+  container-type: inline-size;
+}
+
+/* Three equal columns up to 420px, centered; in a host that still draws the actions (no title bar), they stay on
+   the right and the control centers itself in the remaining space. */
+.tabs-list {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  flex: 1;
+  min-width: 0;
+  max-width: 420px;
+  margin: 0 auto;
+  padding: 2px;
+  border-radius: 6px;
+  background-color: var(--pr-segment-bg);
+}
+
+.tabs-action {
+  flex: none;
+  color: var(--pr-fg);
+}
+
+/* The plugin status and the read time, only as a tooltip: an icon with no click, dimmed. */
+.tabs-status {
+  flex: none;
+  color: var(--pr-muted-fg);
+  cursor: default;
+}
+
+/* «Refresh» spins while the read runs (the button stays disabled); no motion if the system asks for that. */
+@keyframes pr-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.ib[disabled] .ic-refresh {
+  animation: pr-spin 1s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ib[disabled] .ic-refresh {
+    animation: none;
+  }
+}
+
+.tab {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+  min-width: 0;
+  height: 24px;
+  padding: 0 6px;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--pr-tab-inactive-fg);
+  font-size: 0.85em;
+  white-space: nowrap;
+}
+
+.tab:hover {
+  color: var(--pr-tab-active-fg);
+}
+
+.tab[aria-selected='true'] {
+  color: var(--pr-tab-active-fg);
+  background-color: var(--pr-bg);
+  border-color: var(--pr-segment-active-border);
+  font-weight: 600;
+}
+
+.tab:focus-visible {
+  outline: 1px solid var(--pr-focus);
+  outline-offset: -1px;
+}
+
+/* In the narrow row only the label shrinks (with an ellipsis); icon and counter stay whole. */
+.tab-label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.tab .ic,
+.tab .counter {
+  flex: none;
+}
+
+.tab .counter {
+  min-width: 1.4em;
+  padding: 0 4px;
+  font-weight: 600;
+}
+
+/* Now with an owner task: the counter in the owner color says there is something waiting for you. The number goes in the
+   view background color, which contrasts with the purple in the three themes; the light theme `--pr-badge-fg` is dark and vanished. */
+.tab .counter.owner {
+  color: var(--pr-bg);
+  background-color: var(--pr-state-owner);
+}
+
+/* Narrow row: the row is a container; below 300px each segment keeps the icon and the counter
+   (the name goes in the `title` tooltip). The label leaves the view with the screen-reader-only text technique (not `display: none`,
+   which would remove it from the accessible name). The counter keeps the number: it is what says what asks for you. The limit: three segments
+   with icon, label and counter (~90px each) plus the row indent make ~300px. */
+@container (max-width: 300px) {
+  .tab-label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  .tab {
+    gap: 4px;
+    padding: 0 4px;
+  }
+}
+
+/* The plan card: stacked bar with a legend and, below, the actions. */
+.progress {
+  padding: 2px 8px 0;
+}
+
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px 10px;
+  margin-top: 4px;
+  font-size: 0.9em;
+  color: var(--pr-muted-fg);
+}
+
+.legend .prog {
+  color: var(--pr-fg);
+  font-variant-numeric: tabular-nums;
+}
+
+.leg {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.leg i {
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.leg i.status-available {
+  background: transparent;
+  border: 1px solid var(--pr-muted-fg);
+}
+
+.pact {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 8px 8px;
+}
+
+.pact .sp {
+  flex: 1;
+}
+
+/* The last button and the «⋯» wrap together: the group has the width of both, does not break inside and, on the
+   row, grows to the end, with .sp pushing the «⋯» to the right. */
+.pact-end {
+  display: flex;
+  flex: 1 0 auto;
+  align-items: center;
+  gap: inherit;
+}
+
+/* Narrow card (~300 px of view): with «Diário», the «⋯» fell alone on a second line; the buttons tighten. */
+@container (max-width: 280px) {
+  .pact {
+    gap: 4px;
+  }
+
+  .pact .btn {
+    padding: 0 6px;
+  }
+}
+
+/* The «⋯» menu: opens to the left (aligned to the right of the button), so it does not leave the narrow view; with no room
+   below, the page sets `.above` and it opens upward. */
+.menu-wrap {
+  position: relative;
+}
+
+.menu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  z-index: 10;
+  min-width: 190px;
+  max-width: calc(100cqw - 16px);
+  margin-top: 2px;
+  padding: 4px 0;
+  border: 1px solid var(--pr-border);
+  border-radius: 4px;
+  background: var(--pr-bg);
+}
+
+.menu.above {
+  top: auto;
+  bottom: 100%;
+  margin: 0 0 2px;
+}
+
+.menu hr {
+  margin: 4px 0;
+  border: none;
+  border-top: 1px solid var(--pr-border);
+}
+
+.mi {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+  padding: 3px 10px;
+  border: none;
+  background: transparent;
+  color: var(--pr-fg);
+  text-align: left;
+}
+
+.mi:hover,
+.mi:focus-visible {
+  background: var(--pr-hover-bg);
+}
+
+.mi:focus-visible {
+  outline: 1px solid var(--pr-focus);
+  outline-offset: -1px;
+}
+
+.mi.danger {
+  color: var(--pr-error-fg);
+}
+
+.mi .ic {
+  width: 14px;
+  height: 14px;
+}
+
+/* Accordion section and row common to the tabs. The section (phase, group by status) is a full-width button;
+   when open, it brings the list of rows. Tree alignment: the header has a 2px border + 16px arrow + 6px gap,
+   and the list indents 22px + 2px of the row body, so the icon (or the ID, with no icon) of the item sits in the header icon column. */
+.sec-head {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+  padding: 3px 2px;
+  border: none;
+  background: transparent;
+  color: var(--pr-fg);
+  text-align: left;
+}
+
+.sec-head:hover {
+  background: var(--pr-hover-bg);
+}
+
+.sec-head:focus-visible {
+  outline: 1px solid var(--pr-focus);
+  outline-offset: -1px;
+}
+
+.sec-head > .ic {
+  transition: transform 0.1s;
+}
+
+.sec-head[aria-expanded='false'] > .ic {
+  transform: rotate(-90deg);
+}
+
+/* The section icon takes the status color: ✓ green done, gray dashed only drafts, blue or yellow ring in progress. */
+.sec-ic {
+  display: inline-flex;
+  flex: none;
+}
+
+.sec-ic .ring-arc {
+  stroke: currentColor;
+}
+
+.sec-title {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sec-summary {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: 6px;
+}
+
+.badges {
+  display: inline-flex;
+  gap: 3px;
+}
+
+/* The counter of a status: number and outline in the color of the .status-* class. */
+.b {
+  min-width: 1.5em;
+  padding: 0 5px;
+  border: 1px solid currentColor;
+  border-radius: 8px;
+  font-size: 0.78em;
+  line-height: 1.5;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+
+.sec-num {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Homogeneous group: the number becomes a counter in the status color (.status-*), on a background of the same color. */
+.sec-num.pc {
+  min-width: 18px;
+  padding: 0 6px;
+  border-radius: 9px;
+  font-size: 0.78em;
+  font-weight: 600;
+  line-height: 16px;
+  text-align: center;
+  background: color-mix(in srgb, currentColor 16%, transparent);
+}
+
+.sec.done .sec-head,
+.sec.abandoned .sec-head {
+  opacity: 0.65;
+}
+
+.rows {
+  list-style: none;
+  margin: 0 0 4px;
+  padding: 0 0 0 22px;
+}
+
+/* The row: the body (icon, ID, title) shrinks the title with an ellipsis; the actions stay on the right, with the main one
+   last and always visible, and the hover ones to its left (they appear on hover and on the focus of any child, :focus-within). */
+.ln {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  column-gap: 4px;
+}
+
+.ln:hover,
+.ln:focus-within {
+  background: var(--pr-hover-bg);
+}
+
+.ln-body {
+  display: grid;
+  grid-template-columns: 16px auto minmax(0, 1fr);
+  align-items: center;
+  column-gap: 6px;
+  min-width: 0;
+  padding: 3px 2px;
+  border: none;
+  background: transparent;
+  color: var(--pr-fg);
+  text-align: left;
+}
+
+.ln-body:focus-visible {
+  outline: 1px solid var(--pr-focus);
+  outline-offset: -1px;
+}
+
+.ln.no-ic .ln-body {
+  grid-template-columns: auto minmax(0, 1fr);
+}
+
+.ln .tt {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ln .id {
+  white-space: nowrap;
+}
+
+.ln.child.depth-1 .ln-body {
+  padding-left: 16px;
+}
+
+.ln.child.depth-2 .ln-body {
+  padding-left: 30px;
+}
+
+.ln .acts {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  padding-right: 2px;
+}
+
+.ln .hov {
+  display: none;
+  gap: 2px;
+}
+
+.ln:hover .hov,
+.ln:focus-within .hov {
+  display: inline-flex;
+}
+
+/* The subline aligns with the title: after the icon column (2px + 16px + 6px); with no icon, with the ID. */
+.ln .sub {
+  grid-column: 1 / -1;
+  padding: 0 2px 2px 24px;
+  font-size: 0.9em;
+  color: var(--pr-muted-fg);
+  overflow-wrap: anywhere;
+}
+
+.ln.no-ic .sub {
+  padding-left: 2px;
+}
+
+/* On an idea the slug (in place of the ID) is long: it gets at most half the row, with an ellipsis, and the title the rest;
+   in the common row grid the ID does not shrink and hid the whole title. */
+.ln.idea .ln-body {
+  display: flex;
+}
+
+.ln.idea .id {
+  flex: 0 1 auto;
+  max-width: 50%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ln.idea .tt {
+  flex: 1 1 0;
+}
+
+/* The «→ plan» link of the mapped idea, in the subline. */
+.ln .sub .link {
+  padding: 0;
+  border: none;
+  background: none;
+  font: inherit;
+  color: var(--pr-link-fg);
+  cursor: pointer;
+}
+
+.ln .sub .link:hover {
+  color: var(--pr-link-active-fg);
+  text-decoration: underline;
+}
+
+/* The main action with text («Afinar», «Criar tasks»): it does not wrap, so it never changes height or place; and the actions
+   have the height of an icon (.ib), so the hover icons do not stretch the row and push the ones below. */
+.ln .acts .btn {
+  white-space: nowrap;
+}
+
+.ln .acts {
+  min-height: 24px;
+}
+
+.ln.group-done .tt,
+.ln.group-cancelled .tt,
+.ln.group-abandoned .tt {
+  color: var(--pr-muted-fg);
+}
+
+.more {
+  padding: 4px 0 4px 2px;
+}
+
+/* «Mostrar mais» as a discreet link. */
+.more-link {
+  background: none;
+  border: 0;
+  padding: 2px 4px;
+  font: inherit;
+  font-size: 0.9em;
+  color: var(--pr-muted-fg);
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.more-link:hover {
+  color: var(--pr-fg);
+}
+
+.more-link:focus-visible {
+  outline: 1px solid var(--pr-focus, currentColor);
+  outline-offset: 1px;
+}
+
+/* «Now»: the plan card, always open; the top toggles nothing. */
+.now-plan > .header:hover {
+  background-image: none;
+}
+
+.now-empty {
+  margin: 4px 12px;
+  color: var(--pr-muted-fg);
+}
+
+/* Task detail: a modal <dialog>; the darkened backdrop is the ::backdrop. */
+dialog.dlg {
+  box-sizing: border-box;
+  width: calc(100% - 20px);
+  max-width: none;
+  max-height: calc(100% - 40px);
+  margin: 20px auto auto;
+  padding: 0;
+  color: var(--pr-fg);
+  background: var(--pr-bg);
+  border: 1px solid var(--pr-border);
+  border-radius: 8px;
+}
+
+dialog.dlg[open] {
+  display: flex;
+  flex-direction: column;
+}
+
+dialog.dlg::backdrop {
+  background: var(--pr-hover-bg);
+  opacity: 0.8;
+}
+
+/* In the narrow view (less than ~300 px) the popup takes the whole view. */
+@media (max-width: 300px) {
+  dialog.dlg {
+    width: 100%;
+    height: 100%;
+    max-height: 100%;
+    margin: 0;
+    border: 0;
+    border-radius: 0;
+  }
+}
+
+.dlg .dh {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+  padding: 12px 14px 8px;
+}
+
+.dlg .dh-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.dlg h2 {
+  margin: 2px 0 0;
+  font-size: 1.05em;
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+.dlg .db {
+  padding: 0 14px 12px;
+  overflow: auto;
+}
+
+.dlg .grid {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 5px 10px;
+  margin: 6px 0 10px;
+}
+
+.dlg .grid dt {
+  color: var(--pr-muted-fg);
+}
+
+.dlg .grid dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.dlg .grid dd.file {
+  font-family: var(--pr-mono-font);
+  font-size: 0.9em;
+}
+
+.dlg .box {
+  margin: 4px 0 10px;
+  padding: 8px;
+  background: var(--pr-badge-bg);
+  color: var(--pr-badge-fg);
+  border: 1px solid var(--pr-border);
+  border-radius: 4px;
+  overflow-wrap: anywhere;
+}
+
+.dlg .lbl {
+  margin-top: 6px;
+  font-size: 0.8em;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--pr-muted-fg);
+}
+
+.dlg .deps {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin: 4px 0 8px;
+}
+
+.dlg .dep {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 1px 6px;
+  font: inherit;
+  font-size: 0.9em;
+  color: var(--pr-fg);
+  background: transparent;
+  border: 1px solid var(--pr-border);
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.dlg .dep:hover {
+  background: var(--pr-hover-bg);
+}
+
+.dlg .dep:focus-visible {
+  outline: 1px solid var(--pr-focus);
+  outline-offset: 1px;
+}
+
+/* Still missing: border and ID in the «waiting» color. Nonexistent: dashed, with no click. */
+.dlg .dep.missing {
+  border-color: var(--pr-state-wait);
+}
+
+.dlg .dep.nonexistent {
+  color: var(--pr-error-fg);
+  border-style: dashed;
+  cursor: default;
+}
+
+.dlg .none {
+  color: var(--pr-muted-fg);
+}
+
+.dlg .df {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 10px 14px;
+  border-top: 1px solid var(--pr-border);
+}
+
+/* Search and filters: pinned on scroll, right below the tab row. */
+.filters {
+  position: sticky;
+  top: var(--pr-tabs-height, 0px);
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 6px 0;
+  background: var(--pr-bg);
+  border-bottom: 1px solid var(--pr-border);
+}
+
+.search,
+.sel {
+  min-width: 0;
+  height: 24px;
+  padding: 0 6px;
+  border: 1px solid var(--pr-border);
+  border-radius: 4px;
+  font: inherit;
+  color: var(--pr-fg);
+  background: var(--pr-bg);
+}
+
+.search {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* The field and, with a filter in effect, the clear «×» beside it; the native «×» of the field goes away so there are not two. */
+.search-row {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.search-row .ib {
+  flex: none;
+  color: var(--pr-fg);
+}
+
+/*
+ * The advanced funnel: to the right of the field, on when open; the dot in the corner says that something hidden in it
+ * (track, tier, «Por estado», the plan in Now) is in effect.
+ */
+.funnel {
+  position: relative;
+}
+
+.funnel .dot {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--pr-focus);
+  box-shadow: 0 0 0 1px var(--pr-bg);
+}
+
+.search::-webkit-search-cancel-button {
+  display: none;
+}
+
+.search:focus-visible,
+.sel:focus-visible,
+.seg:focus-visible {
+  outline: 1px solid var(--pr-focus);
+  outline-offset: -1px;
+}
+
+.chips,
+.advanced,
+.row-nm {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px;
+}
+
+.row-nm:empty {
+  display: none;
+}
+
+/*
+ * The chips on a single row: the pinned bar stays on 2 lines (field + funnel; chips) at any width. What does not
+ * fit scrolls horizontally (trackpad, Shift+wheel or Tab, which brings the focused chip into view), with no scrollbar that
+ * thickens the row; the chips neither shrink nor wrap. When it overflows (the page measures and sets `.overflows`), the right
+ * edge fades to say there is more, and the slack at the end leaves the last chip whole outside the fade.
+ */
+.chips {
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scrollbar-width: none;
+}
+
+.chips::-webkit-scrollbar {
+  display: none;
+}
+
+/* `scroll-padding-inline` makes the chip that Tab brings into view stop outside the fade, in both directions. */
+.chips.overflows {
+  padding-right: 24px;
+  scroll-padding-inline: 24px;
+  mask-image: linear-gradient(to right, var(--pr-bg) calc(100% - 24px), transparent);
+}
+
+.chips .chip {
+  flex: none;
+  white-space: nowrap;
+}
+
+/* The row scrolls and clips what passes the edge: the focus outline stays inside the chip. */
+.chips .chip:focus-visible {
+  outline-offset: -2px;
+}
+
+.chip .n {
+  opacity: 0.8;
+}
+
+.segs {
+  display: inline-flex;
+  margin-left: auto;
+}
+
+.seg {
+  height: 24px;
+  padding: 0 8px;
+  border: 1px solid var(--pr-border);
+  font-size: 0.85em;
+  color: var(--pr-muted-fg);
+  background: transparent;
+}
+
+.seg:first-child {
+  border-radius: 4px 0 0 4px;
+}
+
+.seg:last-child {
+  border-radius: 0 4px 4px 0;
+  border-left: none;
+}
+
+.seg.on {
+  color: var(--pr-selected-fg);
+  background: var(--pr-selected-bg);
+}
+
+.nm {
+  color: var(--pr-muted-fg);
+  font-size: 0.85em;
+}
+
+mark {
+  color: inherit;
+  background: var(--pr-badge-bg);
+  border-radius: 2px;
+}
+
+/*
+ * The give-up confirmation: a page of its own, in an alarming tone. The error-colored strip on the left, the
+ * triangle and the title say it is destructive; the graph indents through the nested list; the applying button has the outline
+ * and the text in the error color, and «Voltar» is the main one (the default).
+ */
+.page-cf {
+  max-width: 720px;
+  margin: 16px auto;
+}
+
+.cf {
+  padding: 12px 16px 16px 14px;
+  border: 1px solid var(--pr-border);
+  border-left: 4px solid var(--pr-error-fg);
+  border-radius: 4px;
+}
+
+.cf-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.cf-head h1 {
+  margin: 0;
+  font-size: 1.35em;
+  color: var(--pr-error-fg);
+}
+
+.cf-alarm {
+  flex: none;
+  width: 28px;
+  height: 28px;
+  fill: none;
+  stroke: var(--pr-error-fg);
+  stroke-width: 1.4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.cf-summary p {
+  margin: 8px 0;
+  color: var(--pr-muted-fg);
+}
+
+.cf-phases {
+  margin: 10px 0 4px;
+  padding: 0;
+  list-style: none;
+  font-weight: 600;
+  color: var(--pr-error-fg);
+}
+
+.cf-graph {
+  margin: 10px 0 14px;
+  padding: 6px 8px;
+  border: 1px solid var(--pr-border);
+  border-radius: 4px;
+}
+
+.cf-graph ul {
+  margin: 0;
+  padding-left: 22px;
+  list-style: none;
+}
+
+.cf-graph > ul {
+  padding-left: 0;
+}
+
+.cf-graph li {
+  padding: 2px 0;
+  line-height: 1.5;
+}
+
+.cf-graph .ic {
+  width: 14px;
+  height: 14px;
+  vertical-align: -2px;
+}
+
+.cf-ic {
+  margin-right: 6px;
+}
+
+.cf-graph .id {
+  font-family: var(--pr-mono-font);
+  color: var(--pr-link-fg);
+}
+
+.cf-phase,
+.cf-also {
+  color: var(--pr-muted-fg);
+}
+
+.cf-phase::before {
+  content: '· ';
+}
+
+.cf-also::before {
+  content: '— ';
+}
+
+.cf-tag {
+  padding: 0 5px;
+  border-radius: 8px;
+  font-size: 0.85em;
+  color: var(--pr-badge-fg);
+  background: var(--pr-badge-bg);
+}
+
+.cf-label {
+  display: block;
+  margin-bottom: 4px;
+}
+
+.cf-reason {
+  width: 100%;
+  box-sizing: border-box;
+  height: 26px;
+  padding: 0 6px;
+  border: 1px solid var(--pr-border);
+  border-radius: 4px;
+  font: inherit;
+  color: var(--pr-fg);
+  background: var(--pr-bg);
+}
+
+.cf-reason:focus-visible {
+  outline: 1px solid var(--pr-focus);
+  outline-offset: -1px;
+}
+
+.cf-reason[aria-invalid='true'] {
+  border-color: var(--pr-error-fg);
+}
+
+.cf-error {
+  margin: 4px 0 0;
+  color: var(--pr-error-fg);
+}
+
+.cf-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.btn.cf-danger {
+  border-color: var(--pr-error-fg);
+  color: var(--pr-error-fg);
+}
+
+/* Forced colors (Windows High Contrast, and any palette the system imposes): every color becomes a system one, so what
+   told two states apart by color alone would look the same — waiting and draft took the same gray, and a toggled
+   button lost the background that marked it. Toggled controls take the system highlight; the status dots of the
+   legend and the pills take a shape per status, so they still differ with one color. */
+@media (forced-colors: active) {
+  .ib.on,
+  .seg.on,
+  .chip.on {
+    forced-color-adjust: none;
+    color: HighlightText;
+    background: Highlight;
+    border-color: Highlight;
+  }
+
+  .tab[aria-selected='true'] {
+    border-color: Highlight;
+  }
+
+  /* Only system colors below, so the browser can leave them as written. */
+  .pill i,
+  .leg i {
+    forced-color-adjust: none;
+    box-sizing: border-box;
+    border: 1px solid CanvasText;
+    background: CanvasText;
+  }
+
+  /* In progress: the system highlight. Owner: a square. Waiting: a thick ring. Draft: a dashed ring. Available: a
+     thin ring. Cancelled and abandoned: dimmed. Invalid: a hollow square. Done: the plain dot. */
+  .pill i.status-in-progress,
+  .leg i.status-in-progress,
+  .pill i.idea-color-refining {
+    border-color: Highlight;
+    background: Highlight;
+  }
+
+  .pill i.status-owner,
+  .leg i.status-owner {
+    border-radius: 0;
+  }
+
+  .pill i.status-blocked,
+  .leg i.status-blocked {
+    border-width: 2px;
+    background: Canvas;
+  }
+
+  .pill i.status-draft,
+  .leg i.status-draft {
+    border-style: dashed;
+    background: Canvas;
+  }
+
+  .pill i.status-available,
+  .leg i.status-available,
+  .pill i.idea-color-open {
+    background: Canvas;
+  }
+
+  .pill i.status-cancelled,
+  .pill i.status-abandoned,
+  .pill i.idea-color-mapped {
+    border-color: GrayText;
+    background: GrayText;
+  }
+
+  .pill i.status-invalid,
+  .pill i.idea-color-invalid {
+    border-radius: 0;
+    background: Canvas;
+  }
+}

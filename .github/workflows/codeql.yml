@@ -1,0 +1,43 @@
+# CodeQL code scanning: the JavaScript/TypeScript of the core and the extension, and the workflows
+# themselves (the "actions" language). Results go to the repository's Security tab.
+#
+# Its own workflow, not a job of ci.yml: uploading results needs security-events: write, and
+# release.yml calls ci.yml with contents: read only.
+#
+# Code scanning is free on public repositories; on a private one it needs a paid licence, so the job
+# only runs once the repository is public (skipped before, never red).
+
+name: CodeQL
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions: {}
+
+jobs:
+  analyze:
+    name: CodeQL (${{ matrix.language }})
+    if: github.event.repository.visibility == 'public'
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+      security-events: write
+    strategy:
+      fail-fast: false
+      matrix:
+        language: [javascript-typescript, actions]
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      # build-mode none: both languages are analysed from the source, with no build step.
+      - uses: github/codeql-action/init@33d7b85da1a04171e211befe2c739303b9a4c066 # v4.39.3
+        with:
+          languages: ${{ matrix.language }}
+          build-mode: none
+      - uses: github/codeql-action/analyze@33d7b85da1a04171e211befe2c739303b9a4c066 # v4.39.3
+        with:
+          category: /language:${{ matrix.language }}

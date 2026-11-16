@@ -1,0 +1,10 @@
+# O Prettier formata só o código (TypeScript, JavaScript e CSS): ver os scripts format e
+# format:check de hosts/vscode/package.json.
+dist/
+node_modules/
+agent_plans/
+.vscode-test/
+# O texto é revisado à mão.
+*.md
+# JSON gerado ou de ferramenta (package-lock.json, schemas, fixtures, textos de core/i18n).
+*.json

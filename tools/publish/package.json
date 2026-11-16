@@ -1,0 +1,13 @@
+{
+  "name": "plan-relay-publish",
+  "private": true,
+  "description": "The two store CLIs of release.yml, locked apart from the workspace so the jobs that hold an OIDC token or the Open VSX token install only these.",
+  "license": "MIT",
+  "dependencies": {
+    "@vscode/vsce": "4.1.1",
+    "ovsx": "1.4.0"
+  },
+  "overrides": {
+    "minimatch": "^11.0.1"
+  }
+}

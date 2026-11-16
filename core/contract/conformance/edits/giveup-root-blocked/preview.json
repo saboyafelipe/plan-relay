@@ -1,0 +1,6 @@
+{"root": "F1-02",
+ "falls": [
+   {"id": "F1-02", "title": "Waits for the first", "status": "ready", "phase": "phase-1-work", "parent": null, "depth": 0, "also_depends_on": []},
+   {"id": "F1-03", "title": "Waits for the second", "status": "ready", "phase": "phase-1-work", "parent": "F1-02", "depth": 1, "also_depends_on": []}
+ ],
+ "abandoned_phases": []}

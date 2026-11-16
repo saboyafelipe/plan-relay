@@ -1,0 +1,15 @@
+{
+  // The host's tests run under Vitest in Node.
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "composite": true,
+    "emitDeclarationOnly": true,
+    "rootDir": "src",
+    "outDir": "out/test",
+    "tsBuildInfoFile": "out/test.tsbuildinfo",
+    "lib": ["ES2022"],
+    "types": ["node", "vscode", "vitest/globals"]
+  },
+  "include": ["src/**/*.test.ts"],
+  "references": [{ "path": "tsconfig.host.json" }, { "path": "../../core/i18n" }, { "path": "../../core/reader" }, { "path": "../../core/panel" }]
+}

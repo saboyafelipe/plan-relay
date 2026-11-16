@@ -1,0 +1,28 @@
+[
+  {
+    "id": "plan-relay@plan-relay",
+    "version": "0.1.0",
+    "scope": "project",
+    "enabled": true,
+    "installPath": "/home/dev/.claude/plugins/cache/plan-relay/plan-relay/0.1.0",
+    "readFromFolder": "/home/dev/projeto/plan-relay/dist/claude-code",
+    "folderVersion": "0.1.0",
+    "installedAt": "2026-11-13T14:58:47.636Z",
+    "lastUpdated": "2026-11-13T14:58:47.636Z",
+    "projectPath": "/home/dev/projeto",
+    "projectEnabled": true
+  },
+  {
+    "id": "plan-relay@plan-relay",
+    "version": "0.1.0",
+    "scope": "project",
+    "enabled": true,
+    "installPath": "/home/dev/.claude/plugins/cache/plan-relay/plan-relay/0.1.0",
+    "readFromFolder": "/home/dev/projeto/plan-relay/dist/claude-code",
+    "folderVersion": "0.1.0",
+    "installedAt": "2026-11-13T16:07:26.779Z",
+    "lastUpdated": "2026-11-13T16:07:26.779Z",
+    "projectPath": "/home/dev/projeto/prototipos/exemplo",
+    "projectEnabled": true
+  }
+]

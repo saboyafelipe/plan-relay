@@ -1,0 +1,17 @@
+# Dependencies and build output of the extension
+node_modules/
+hosts/vscode/dist/
+hosts/vscode/out/
+# Declarations that `tsc -b` emits for the core packages (project references)
+core/*/out/
+*.vsix
+
+# Test leftovers and the development host
+.vscode-test/
+coverage/
+
+# Ideas and plans that the plugin writes at the root (fixtures and examples version their own)
+/agent_plans/
+
+# Claude Code project settings, written by `claude plugin install --scope project`
+/.claude/

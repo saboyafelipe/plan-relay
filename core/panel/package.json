@@ -1,0 +1,22 @@
+{
+  "name": "@plan-relay/panel",
+  "version": "0.0.0",
+  "private": true,
+  "description": "The plan-relay panel: view model, HTML render, messages and page, for the browser; no host API and no Node API.",
+  "license": "MIT",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./panel.css": "./src/panel.css"
+  },
+  "dependencies": {
+    "@plan-relay/i18n": "0.0.0",
+    "@plan-relay/reader": "0.0.0"
+  },
+  "devDependencies": {
+    "@testing-library/dom": "^10.4.2",
+    "axe-core": "^4.14.1",
+    "happy-dom": "^21.0.4",
+    "postcss": "^8.5.32"
+  }
+}

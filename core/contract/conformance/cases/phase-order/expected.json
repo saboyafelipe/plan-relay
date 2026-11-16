@@ -1,0 +1,31 @@
+{
+  "contract": 1,
+  "name": "ordered",
+  "language": "pt-BR",
+  "profile": "full",
+  "scripts_version": 1,
+  "progress": {"done": 0, "total": 5, "pct": 0, "in_progress": 0, "draft": 0},
+  "phases": [
+    {"dir": "phase-2-two", "title": "phase-2-two", "done": 0, "total": 4, "in_progress": 0},
+    {"dir": "phase-10-ten", "title": "Ten", "done": 0, "total": 1, "in_progress": 0}
+  ],
+  "tasks": [
+    {"id": "F2-9", "title": "Nine", "status": "ready", "type": "code", "track": "core", "tier": "senior",
+     "repos": [], "blocked_by": [], "waiting_on": [], "group": "available", "unblocks": 0,
+     "started": null, "finished": null, "next_step": null, "file": "phase-2-two/F2-9-nine.md"},
+    {"id": "F2-10", "title": "Ten", "status": "ready", "type": "code", "track": "core", "tier": "senior",
+     "repos": [], "blocked_by": [], "waiting_on": [], "group": "available", "unblocks": 0,
+     "started": null, "finished": null, "next_step": null, "file": "phase-2-two/F2-10-ten.md"},
+    {"id": "F2-10.2", "title": "Subtask two", "status": "ready", "type": "code", "track": "core", "tier": "senior",
+     "repos": [], "blocked_by": [], "waiting_on": [], "group": "available", "unblocks": 0,
+     "started": null, "finished": null, "next_step": null, "file": "phase-2-two/F2-10.2-sub-two.md"},
+    {"id": "F2-10.10", "title": "Subtask ten", "status": "ready", "type": "code", "track": "core", "tier": "senior",
+     "repos": [], "blocked_by": [], "waiting_on": [], "group": "available", "unblocks": 0,
+     "started": null, "finished": null, "next_step": null, "file": "phase-2-two/F2-10.10-sub-ten.md"},
+    {"id": "F10-01", "title": "Later phase", "status": "ready", "type": "code", "track": "core", "tier": "senior",
+     "repos": [], "blocked_by": [], "waiting_on": [], "group": "available", "unblocks": 0,
+     "started": null, "finished": null, "next_step": null, "file": "phase-10-ten/F10-01-later.md"}
+  ],
+  "parallel": ["F2-9", "F2-10", "F2-10.2", "F2-10.10", "F10-01"],
+  "run": null
+}

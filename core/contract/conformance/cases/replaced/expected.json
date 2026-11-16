@@ -1,0 +1,31 @@
+{
+  "contract": 1,
+  "name": "swap",
+  "language": "pt-BR",
+  "profile": "full",
+  "scripts_version": 9,
+  "progress": {"done": 1, "total": 3, "pct": 33, "in_progress": 0, "draft": 0},
+  "phases": [
+    {"dir": "phase-1-work", "title": "Work", "done": 1, "total": 3, "in_progress": 0}
+  ],
+  "tasks": [
+    {"id": "F1-01", "title": "Base", "status": "done", "type": "code", "track": "core", "tier": "senior",
+     "repos": [], "blocked_by": [], "waiting_on": [], "group": "done", "unblocks": 1,
+     "started": null, "finished": null, "next_step": null, "file": "phase-1-work/F1-01-base.md"},
+    {"id": "F1-02", "title": "Old way", "status": "cancelled", "type": "code", "track": "core", "tier": "senior",
+     "repos": [], "blocked_by": ["F1-01"], "waiting_on": [], "group": "cancelled", "unblocks": 0,
+     "started": null, "finished": null, "next_step": null, "file": "phase-1-work/F1-02-old-way.md",
+     "replaced_by": "F1-04"},
+    {"id": "F1-03", "title": "Needs the new way", "status": "ready", "type": "code", "track": "core", "tier": "senior",
+     "repos": [], "blocked_by": ["F1-04"], "waiting_on": ["F1-04"], "group": "blocked", "unblocks": 0,
+     "started": null, "finished": null, "next_step": null, "file": "phase-1-work/F1-03-needs-new-way.md"},
+    {"id": "F1-04", "title": "New way", "status": "ready", "type": "code", "track": "core", "tier": "senior",
+     "repos": [], "blocked_by": ["F1-01"], "waiting_on": [], "group": "available", "unblocks": 1,
+     "started": null, "finished": null, "next_step": null, "file": "phase-1-work/F1-04-new-way.md"},
+    {"id": "F1-05", "title": "Dropped", "status": "cancelled", "type": "code", "track": "core", "tier": "senior",
+     "repos": [], "blocked_by": [], "waiting_on": [], "group": "cancelled", "unblocks": 0,
+     "started": null, "finished": null, "next_step": null, "file": "phase-1-work/F1-05-dropped.md"}
+  ],
+  "parallel": ["F1-04"],
+  "run": null
+}

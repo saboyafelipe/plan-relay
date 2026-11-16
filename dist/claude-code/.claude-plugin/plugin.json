@@ -1,0 +1,9 @@
+{
+  "name": "plan-relay-pt-br",
+  "version": "0.1.0",
+  "description": "Mapear um documento em tasks e conduzir o plano, uma task por sessão.",
+  "author": {
+    "name": "Felipe Saboya"
+  },
+  "license": "MIT"
+}

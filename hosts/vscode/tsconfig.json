@@ -1,0 +1,5 @@
+{
+  // A solution: it compiles nothing itself, `tsc -b` builds the three projects below.
+  "files": [],
+  "references": [{ "path": "tsconfig.host.json" }, { "path": "tsconfig.webview.json" }, { "path": "tsconfig.test.json" }]
+}

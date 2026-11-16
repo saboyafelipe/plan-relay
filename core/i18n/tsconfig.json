@@ -1,0 +1,14 @@
+{
+  // Runs in the browser (the panel) and in Node: no Node types and no DOM.
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "composite": true,
+    "emitDeclarationOnly": true,
+    "rootDir": ".",
+    "outDir": "out/src",
+    "types": []
+  },
+  "files": ["en.json", "pt-BR.json"],
+  "include": ["src/**/*.ts"],
+  "exclude": ["src/**/*.test.ts"]
+}

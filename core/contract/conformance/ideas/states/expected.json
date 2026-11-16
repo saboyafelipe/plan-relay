@@ -1,0 +1,6 @@
+[
+  { "slug": "a-open", "title": "Export the plan to CSV", "status": "open", "created": "2026-11-14T10:00Z", "openQuestions": 0, "plan": null },
+  { "slug": "b-refining", "title": "Dark theme", "status": "refining", "created": "2026-11-14T11:30Z", "openQuestions": 2, "plan": null },
+  { "slug": "c-ready", "title": "Search box", "status": "ready", "created": "2026-11-14T12:00Z", "openQuestions": 0, "plan": null },
+  { "slug": "d-mapped", "title": "Search box, mapped", "status": "mapped", "created": "2026-11-14T13:00Z", "openQuestions": 0, "plan": "agent_plans/search-box" }
+]

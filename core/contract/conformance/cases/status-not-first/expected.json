@@ -1,0 +1,103 @@
+{
+  "contract": 1,
+  "language": "pt-BR",
+  "name": "order",
+  "parallel": [
+    "F1-02"
+  ],
+  "phases": [
+    {
+      "dir": "phase-1-work",
+      "done": 1,
+      "in_progress": 1,
+      "title": "Work",
+      "total": 4
+    }
+  ],
+  "profile": "full",
+  "progress": {
+    "done": 1,
+    "draft": 0,
+    "in_progress": 1,
+    "pct": 25,
+    "total": 4
+  },
+  "run": null,
+  "scripts_version": 14,
+  "tasks": [
+    {
+      "blocked_by": [],
+      "file": "phase-1-work/F1-01-done.md",
+      "finished": null,
+      "group": "done",
+      "id": "F1-01",
+      "next_step": null,
+      "repos": [],
+      "started": null,
+      "status": "done",
+      "tier": "senior",
+      "title": "Done, with Status: on line 3",
+      "track": "shell",
+      "type": "code",
+      "unblocks": 1,
+      "waiting_on": []
+    },
+    {
+      "blocked_by": [
+        "F1-01"
+      ],
+      "file": "phase-1-work/F1-02-free.md",
+      "finished": null,
+      "group": "available",
+      "id": "F1-02",
+      "next_step": null,
+      "repos": [],
+      "started": null,
+      "status": "ready",
+      "tier": "senior",
+      "title": "Free, with Status: below Blocked by:",
+      "track": "shell",
+      "type": "code",
+      "unblocks": 1,
+      "waiting_on": []
+    },
+    {
+      "blocked_by": [
+        "F1-02"
+      ],
+      "file": "phase-1-work/F1-03-waits.md",
+      "finished": null,
+      "group": "blocked",
+      "id": "F1-03",
+      "next_step": null,
+      "repos": [],
+      "started": null,
+      "status": "ready",
+      "tier": "junior",
+      "title": "Waits on F1-02",
+      "track": "",
+      "type": "research",
+      "unblocks": 0,
+      "waiting_on": [
+        "F1-02"
+      ]
+    },
+    {
+      "blocked_by": [],
+      "file": "phase-1-work/F1-04-running.md",
+      "finished": null,
+      "group": "in-progress",
+      "id": "F1-04",
+      "next_step": "go on",
+      "repos": [],
+      "started": "2026-01-01T10:00Z",
+      "status": "in-progress",
+      "tier": "senior",
+      "title": "Running, with a blank line before Status:",
+      "track": "",
+      "type": "code",
+      "unblocks": 0,
+      "waiting_on": []
+    }
+  ]
+}

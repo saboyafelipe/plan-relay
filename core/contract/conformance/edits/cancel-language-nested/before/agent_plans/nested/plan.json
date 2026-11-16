@@ -1,0 +1,8 @@
+{
+  "contract": 1,
+  "name": "nested",
+  "source": null,
+  "created": "2026-11-15T09:00Z",
+  "language": "x-test",
+  "translations": [{ "language": "pt-BR", "note": "the \"language\": \"pt-BR\" key above is not the plan's" }]
+}

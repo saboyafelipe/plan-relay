@@ -1,0 +1,5 @@
+[
+  { "slug": "bad-status", "title": "Unknown state", "status": "invalid", "created": null, "openQuestions": 1, "plan": null, "text": "Status: finished\nOpen questions: 1\n\n# Unknown state\n" },
+  { "slug": "no-title", "title": "no-title", "status": "open", "created": "2026-11-14T10:00Z", "openQuestions": null, "plan": null },
+  { "slug": "repeated-key", "title": "Last occurrence wins", "status": "ready", "created": null, "openQuestions": 9, "plan": null }
+]

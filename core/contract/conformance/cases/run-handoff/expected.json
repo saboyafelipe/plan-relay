@@ -1,0 +1,18 @@
+{
+  "contract": 1,
+  "name": "relay",
+  "language": "pt-BR",
+  "profile": "full",
+  "scripts_version": 1,
+  "progress": {"done": 0, "total": 1, "pct": 0, "in_progress": 0, "draft": 0},
+  "phases": [
+    {"dir": "phase-1-only", "title": "phase-1-only", "done": 0, "total": 1, "in_progress": 0}
+  ],
+  "tasks": [
+    {"id": "F1-01", "title": "Review", "status": "ready", "type": "review", "track": "ops", "tier": "senior",
+     "repos": [], "blocked_by": [], "waiting_on": [], "group": "available", "unblocks": 0,
+     "started": null, "finished": null, "next_step": null, "file": "phase-1-only/F1-01-review.md"}
+  ],
+  "parallel": ["F1-01"],
+  "run": {"log": "notes/run-2026-11-14.md", "open": true, "handoff": "2026-11-14 18:47"}
+}

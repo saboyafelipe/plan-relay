@@ -1,0 +1,42 @@
+/* The panel CSS (core/panel) with the --pr-* variables taken from the VS Code theme: the panel follows the
+   light, dark or high contrast theme. esbuild bundles the two into dist/panel.css. */
+@import '@plan-relay/panel/panel.css';
+
+:root {
+  --pr-font: var(--vscode-font-family);
+  --pr-font-size: var(--vscode-font-size);
+  --pr-mono-font: var(--vscode-editor-font-family);
+  --pr-fg: var(--vscode-foreground);
+  --pr-bg: var(--vscode-sideBar-background);
+  --pr-muted-fg: var(--vscode-descriptionForeground);
+  --pr-error-fg: var(--vscode-errorForeground);
+  --pr-code-fg: var(--vscode-textPreformat-foreground);
+  --pr-focus: var(--vscode-focusBorder);
+  --pr-border: var(--vscode-panel-border, var(--vscode-widget-border));
+  --pr-hover-bg: var(--vscode-list-hoverBackground);
+  --pr-link-fg: var(--vscode-textLink-foreground);
+  --pr-link-active-fg: var(--vscode-textLink-activeForeground);
+  --pr-button-border: var(--vscode-button-border, transparent);
+  --pr-button-fg: var(--vscode-button-foreground);
+  --pr-button-bg: var(--vscode-button-background);
+  --pr-button-hover-bg: var(--vscode-button-hoverBackground);
+  --pr-button-secondary-fg: var(--vscode-button-secondaryForeground);
+  --pr-button-secondary-bg: var(--vscode-button-secondaryBackground);
+  --pr-button-secondary-hover-bg: var(--vscode-button-secondaryHoverBackground);
+  --pr-badge-fg: var(--vscode-badge-foreground);
+  --pr-badge-bg: var(--vscode-badge-background);
+  --pr-track-bg: var(--vscode-editorWidget-background);
+  --pr-progress-bg: var(--vscode-progressBar-background);
+  --pr-selected-bg: var(--vscode-list-activeSelectionBackground);
+  --pr-selected-fg: var(--vscode-list-activeSelectionForeground);
+  --pr-state-ok: var(--vscode-charts-green);
+  --pr-state-run: var(--vscode-charts-blue);
+  --pr-state-wait: var(--vscode-list-warningForeground);
+  --pr-state-owner: var(--vscode-charts-purple);
+  /* The Now | Plans | Ideas tabs follow the VS Code view tab colors, in a segmented control with a field
+     background; the active one has the high contrast outline or, in the other themes, the panels' border. */
+  --pr-tab-active-fg: var(--vscode-panelTitle-activeForeground);
+  --pr-tab-inactive-fg: var(--vscode-panelTitle-inactiveForeground);
+  --pr-segment-bg: var(--vscode-input-background);
+  --pr-segment-active-border: var(--vscode-contrastActiveBorder, var(--vscode-panel-border));
+}

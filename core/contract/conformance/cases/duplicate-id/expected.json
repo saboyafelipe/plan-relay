@@ -1,0 +1,114 @@
+{
+  "contract": 1,
+  "language": "pt-BR",
+  "name": "twins",
+  "parallel": [
+    "F2-01"
+  ],
+  "phases": [
+    {
+      "dir": "phase-1-work",
+      "done": 0,
+      "in_progress": 0,
+      "title": "Work",
+      "total": 2
+    },
+    {
+      "dir": "phase-2-more",
+      "done": 0,
+      "in_progress": 0,
+      "title": "More",
+      "total": 2
+    }
+  ],
+  "profile": "full",
+  "progress": {
+    "done": 0,
+    "draft": 0,
+    "in_progress": 0,
+    "pct": 0,
+    "total": 4
+  },
+  "run": null,
+  "scripts_version": 22,
+  "tasks": [
+    {
+      "blocked_by": [
+        "F2-01"
+      ],
+      "file": "phase-1-work/F1-01-first.md",
+      "finished": "2026-01-01T11:00Z",
+      "group": "invalid",
+      "id": "F1-01",
+      "next_step": null,
+      "repos": [],
+      "started": null,
+      "status": "done",
+      "tier": "senior",
+      "title": "First copy",
+      "track": "one",
+      "type": "code",
+      "unblocks": 1,
+      "waiting_on": []
+    },
+    {
+      "blocked_by": [
+        "F1-01"
+      ],
+      "file": "phase-1-work/F1-02-needs.md",
+      "finished": null,
+      "group": "blocked",
+      "id": "F1-02",
+      "next_step": null,
+      "repos": [],
+      "started": null,
+      "status": "ready",
+      "tier": "senior",
+      "title": "Needs the duplicated id",
+      "track": "one",
+      "type": "code",
+      "unblocks": 0,
+      "waiting_on": [
+        "F1-01"
+      ]
+    },
+    {
+      "blocked_by": [],
+      "file": "phase-2-more/F1-01-again.md",
+      "finished": null,
+      "group": "invalid",
+      "id": "F1-01",
+      "next_step": "rename one of the two",
+      "repos": [
+        "repo-a"
+      ],
+      "started": "2026-01-01T12:00Z",
+      "status": "in-progress",
+      "tier": "mid",
+      "title": "Second copy",
+      "track": "two",
+      "type": "research",
+      "unblocks": 1,
+      "waiting_on": []
+    },
+    {
+      "blocked_by": [],
+      "file": "phase-2-more/F2-01-free.md",
+      "finished": null,
+      "group": "available",
+      "id": "F2-01",
+      "next_step": null,
+      "repos": [
+        "repo-a"
+      ],
+      "started": null,
+      "status": "ready",
+      "tier": "senior",
+      "title": "Free",
+      "track": "two",
+      "type": "code",
+      "unblocks": 1,
+      "waiting_on": []
+    }
+  ]
+}

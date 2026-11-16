@@ -1,0 +1,32 @@
+{
+  "contract": 1,
+  "name": "fork",
+  "language": "pt-BR",
+  "profile": "full",
+  "scripts_version": 9,
+  "progress": {"done": 0, "total": 3, "pct": 0, "in_progress": 0, "draft": 0},
+  "phases": [
+    {"dir": "phase-1-work", "title": "phase-1-work", "done": 0, "total": 3, "in_progress": 0}
+  ],
+  "tasks": [
+    {"id": "F1-01", "title": "Falls", "status": "abandoned", "type": "code", "track": "core", "tier": "senior",
+     "repos": [], "blocked_by": [], "waiting_on": [], "group": "abandoned", "unblocks": 1,
+     "started": null, "finished": null, "next_step": null, "file": "phase-1-work/F1-01-falls.md",
+     "given_up_by": "owner"},
+    {"id": "F1-02", "title": "Stays", "status": "ready", "type": "code", "track": "core", "tier": "senior",
+     "repos": [], "blocked_by": [], "waiting_on": [], "group": "available", "unblocks": 1,
+     "started": null, "finished": null, "next_step": null, "file": "phase-1-work/F1-02-stays.md"},
+    {"id": "F1-03", "title": "Two parents", "status": "abandoned", "type": "code", "track": "core", "tier": "senior",
+     "repos": [], "blocked_by": ["F1-01", "F1-02"], "waiting_on": [], "group": "abandoned", "unblocks": 0,
+     "started": null, "finished": null, "next_step": null, "file": "phase-1-work/F1-03-two-parents.md",
+     "given_up_with": "F1-01"},
+    {"id": "F1-04", "title": "Waits", "status": "ready", "type": "code", "track": "core", "tier": "senior",
+     "repos": [], "blocked_by": ["F1-02"], "waiting_on": ["F1-02"], "group": "blocked", "unblocks": 0,
+     "started": null, "finished": null, "next_step": null, "file": "phase-1-work/F1-04-waits.md"},
+    {"id": "F1-05", "title": "Stuck", "status": "ready", "type": "code", "track": "core", "tier": "senior",
+     "repos": [], "blocked_by": ["F1-01"], "waiting_on": ["F1-01"], "group": "blocked", "unblocks": 0,
+     "started": null, "finished": null, "next_step": null, "file": "phase-1-work/F1-05-stuck.md"}
+  ],
+  "parallel": ["F1-02"],
+  "run": null
+}

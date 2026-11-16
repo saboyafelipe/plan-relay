@@ -1,0 +1,39 @@
+{
+  "contract": 1,
+  "name": "par",
+  "language": "pt-BR",
+  "profile": "full",
+  "scripts_version": 1,
+  "progress": {"done": 1, "total": 8, "pct": 13, "in_progress": 1, "draft": 1},
+  "phases": [
+    {"dir": "phase-1-work", "title": "Work", "done": 1, "total": 8, "in_progress": 1}
+  ],
+  "tasks": [
+    {"id": "F1-01", "title": "Busy", "status": "in-progress", "type": "code", "track": "work", "tier": "senior",
+     "repos": ["repo-a"], "blocked_by": [], "waiting_on": [], "group": "in-progress", "unblocks": 0,
+     "started": "2026-11-03T09:00Z", "finished": null, "next_step": null, "file": "phase-1-work/F1-01-busy.md"},
+    {"id": "F1-02", "title": "Same repo as the busy one", "status": "ready", "type": "code", "track": "work", "tier": "senior",
+     "repos": ["repo-a", "repo-c"], "blocked_by": [], "waiting_on": [], "group": "available", "unblocks": 0,
+     "started": null, "finished": null, "next_step": null, "file": "phase-1-work/F1-02-same-repo.md"},
+    {"id": "F1-03", "title": "Unblocks nothing", "status": "ready", "type": "code", "track": "work", "tier": "senior",
+     "repos": ["repo-b"], "blocked_by": [], "waiting_on": [], "group": "available", "unblocks": 0,
+     "started": null, "finished": null, "next_step": null, "file": "phase-1-work/F1-03-low.md"},
+    {"id": "F1-04", "title": "Unblocks two", "status": "ready", "type": "code", "track": "work", "tier": "senior",
+     "repos": ["repo-b", "repo-c"], "blocked_by": [], "waiting_on": [], "group": "available", "unblocks": 2,
+     "started": null, "finished": null, "next_step": null, "file": "phase-1-work/F1-04-high.md"},
+    {"id": "F1-05", "title": "No repos", "status": "ready", "type": "prototype", "track": "work", "tier": "senior",
+     "repos": [], "blocked_by": [], "waiting_on": [], "group": "available", "unblocks": 0,
+     "started": null, "finished": null, "next_step": null, "file": "phase-1-work/F1-05-free.md"},
+    {"id": "F1-06", "title": "Done, cites F1-03", "status": "done", "type": "code", "track": "work", "tier": "senior",
+     "repos": [], "blocked_by": ["F1-03"], "waiting_on": [], "group": "done", "unblocks": 0,
+     "started": null, "finished": null, "next_step": null, "file": "phase-1-work/F1-06-done.md"},
+    {"id": "F1-07", "title": "Waits for F1-04", "status": "ready", "type": "code", "track": "work", "tier": "senior",
+     "repos": [], "blocked_by": ["F1-04"], "waiting_on": ["F1-04"], "group": "blocked", "unblocks": 0,
+     "started": null, "finished": null, "next_step": null, "file": "phase-1-work/F1-07-waits.md"},
+    {"id": "F1-08", "title": "Draft, also cites F1-04", "status": "draft", "type": "code", "track": "work", "tier": "senior",
+     "repos": [], "blocked_by": ["F1-04"], "waiting_on": [], "group": "draft", "unblocks": 0,
+     "started": null, "finished": null, "next_step": null, "file": "phase-1-work/F1-08-draft.md"}
+  ],
+  "parallel": ["F1-04", "F1-05"],
+  "run": null
+}

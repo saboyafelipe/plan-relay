@@ -1,0 +1,67 @@
+{
+  "contract": 1,
+  "language": "pt-BR",
+  "name": "repeat",
+  "parallel": [
+    "F1-02"
+  ],
+  "phases": [
+    {
+      "dir": "phase-1-work",
+      "done": 1,
+      "in_progress": 0,
+      "title": "Work",
+      "total": 2
+    }
+  ],
+  "profile": "full",
+  "progress": {
+    "done": 1,
+    "draft": 0,
+    "in_progress": 0,
+    "pct": 50,
+    "total": 2
+  },
+  "run": null,
+  "scripts_version": 19,
+  "tasks": [
+    {
+      "blocked_by": [],
+      "file": "phase-1-work/F1-01-twice.md",
+      "finished": null,
+      "group": "done",
+      "id": "F1-01",
+      "next_step": null,
+      "repos": [
+        "repo-b"
+      ],
+      "started": "2026-01-01T10:00Z",
+      "status": "done",
+      "tier": "mid",
+      "title": "Every key twice, the last one counts",
+      "track": "second",
+      "type": "code",
+      "unblocks": 1,
+      "waiting_on": []
+    },
+    {
+      "blocked_by": [
+        "F1-01"
+      ],
+      "file": "phase-1-work/F1-02-free.md",
+      "finished": null,
+      "group": "available",
+      "id": "F1-02",
+      "next_step": null,
+      "repos": [],
+      "started": null,
+      "status": "ready",
+      "tier": "senior",
+      "title": "Status twice, ready the last",
+      "track": "",
+      "type": "code",
+      "unblocks": 0,
+      "waiting_on": []
+    }
+  ]
+}

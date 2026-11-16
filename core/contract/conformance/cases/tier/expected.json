@@ -1,0 +1,42 @@
+{
+  "contract": 1,
+  "name": "tiered",
+  "language": "pt-BR",
+  "profile": "full",
+  "scripts_version": 1,
+  "progress": {"done": 0, "total": 9, "pct": 0, "in_progress": 0, "draft": 0},
+  "phases": [
+    {"dir": "phase-1-levels", "title": "Levels", "done": 0, "total": 9, "in_progress": 0}
+  ],
+  "tasks": [
+    {"id": "F1-01", "title": "No tier", "status": "ready", "type": "code", "track": "core", "tier": "senior",
+     "repos": [], "blocked_by": [], "waiting_on": [], "group": "available", "unblocks": 0,
+     "started": null, "finished": null, "next_step": null, "file": "phase-1-levels/F1-01-absent.md"},
+    {"id": "F1-02", "title": "Junior", "status": "ready", "type": "code", "track": "core", "tier": "junior",
+     "repos": [], "blocked_by": [], "waiting_on": [], "group": "available", "unblocks": 0,
+     "started": null, "finished": null, "next_step": null, "file": "phase-1-levels/F1-02-junior.md"},
+    {"id": "F1-03", "title": "Mid, tab after the colon", "status": "ready", "type": "code", "track": "core", "tier": "mid",
+     "repos": [], "blocked_by": [], "waiting_on": [], "group": "available", "unblocks": 0,
+     "started": null, "finished": null, "next_step": null, "file": "phase-1-levels/F1-03-mid.md"},
+    {"id": "F1-04", "title": "Senior", "status": "ready", "type": "code", "track": "core", "tier": "senior",
+     "repos": [], "blocked_by": [], "waiting_on": [], "group": "available", "unblocks": 0,
+     "started": null, "finished": null, "next_step": null, "file": "phase-1-levels/F1-04-senior.md"},
+    {"id": "F1-05", "title": "Unknown value", "status": "ready", "type": "code", "track": "core", "tier": "senior",
+     "repos": [], "blocked_by": [], "waiting_on": [], "group": "available", "unblocks": 0,
+     "started": null, "finished": null, "next_step": null, "file": "phase-1-levels/F1-05-unknown.md"},
+    {"id": "F1-06", "title": "Wrong case", "status": "ready", "type": "code", "track": "core", "tier": "senior",
+     "repos": [], "blocked_by": [], "waiting_on": [], "group": "available", "unblocks": 0,
+     "started": null, "finished": null, "next_step": null, "file": "phase-1-levels/F1-06-case.md"},
+    {"id": "F1-07", "title": "No status line, tier still read", "status": "", "type": "code", "track": "core", "tier": "junior",
+     "repos": [], "blocked_by": [], "waiting_on": [], "group": "invalid", "unblocks": 0,
+     "started": null, "finished": null, "next_step": null, "file": "phase-1-levels/F1-07-invalid.md"},
+    {"id": "F1-08", "title": "Tier below the title", "status": "ready", "type": "code", "track": "core", "tier": "senior",
+     "repos": [], "blocked_by": [], "waiting_on": [], "group": "available", "unblocks": 0,
+     "started": null, "finished": null, "next_step": null, "file": "phase-1-levels/F1-08-after-title.md"},
+    {"id": "F1-09", "title": "Human, tier passed through", "status": "ready", "type": "human", "track": "core", "tier": "junior",
+     "repos": [], "blocked_by": [], "waiting_on": [], "group": "owner", "unblocks": 0,
+     "started": null, "finished": null, "next_step": null, "file": "phase-1-levels/F1-09-human.md"}
+  ],
+  "parallel": ["F1-01", "F1-02", "F1-03", "F1-04", "F1-05", "F1-06", "F1-08"],
+  "run": null
+}

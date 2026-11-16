@@ -1,0 +1,276 @@
+# Plan Relay CI on GitHub Actions.
+#
+# On every push to main and every pull request: builds the extension, runs
+# ESLint and Prettier (--check), runs the tests (vitest and the plugin's sh suites, on macOS and Ubuntu, with the
+# contract conformance suite and the JSON Schema validation), runs
+# shellcheck on every versioned .sh, checks that the generated plugin in
+# dist/claude-code/ is up to date with core/ and agents/claude-code/ (tools/build.sh
+# --check), validates the two generated plugins (pt-BR and en) and the marketplace with
+# `claude plugin validate --strict`, lints the workflows (actionlint, zizmor), checks the local
+# links of the Markdown files (lychee, offline) and keeps the .vsix as a workflow artifact.
+#
+# release.yml calls this same workflow (workflow_call) at the tag before it publishes anything, so a
+# release passes exactly these gates on exactly the tagged code. When called, `ref` is the tag to
+# check out, the npm and VS Code caches are off (the published .vsix is built from a clean
+# install, never from a cache an earlier run wrote) and `pre-release` packages the .vsix as one.
+#
+# The gates are listed in docs/development.md, "CI gates"; tools/tests/gates.sh fails when a run: here
+# is missing from that list or the list names a command this file does not run. npm ci runs with
+# --ignore-scripts, as it does on a contributor's machine: no dependency's install script runs here.
+#
+# Runs at the root of the plan-relay repository.
+
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+  workflow_call:
+    inputs:
+      ref:
+        description: 'The ref to check out (release.yml passes the tag); empty for the event ref'
+        required: false
+        type: string
+        default: ''
+      pre-release:
+        description: 'Package the .vsix as a pre-release'
+        required: false
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+jobs:
+  extension:
+    name: Extension (typecheck, tests, .vsix)
+    runs-on: ubuntu-24.04
+    # At the root: the npm workspaces (core/i18n, core/reader, core/panel, hosts/vscode) share a single package-lock.json.
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.ref }}
+          persist-credentials: false
+
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .nvmrc
+          cache: ${{ !inputs.ref && 'npm' || '' }}
+          cache-dependency-path: package-lock.json
+
+      - run: npm ci --ignore-scripts
+      # tsc -b: the project references reject a file in core/ that imports from hosts/ or from an undeclared package.
+      - run: npm run typecheck
+      # ESLint and Prettier cover hosts/vscode/src and the TypeScript in core/{reader,panel,i18n}; ESLint draws the
+      # import boundary of each layer (vscode outside core/, Node modules outside core/panel, core/i18n and the browser side of core/reader).
+      - run: npm run lint
+      - run: npm run format:check
+      - run: npm test
+      # The same suite with v8 coverage: fails below the floor of a package (vitest.config.mts) and prints the summary.
+      - run: npm run coverage
+      # The dependencies esbuild bundles into the .vsix, at any severity. The development ones are left to
+      # Dependabot alerts, so a new advisory in a build tool does not block CI or a release with no change here.
+      - run: npm audit --omit=dev --audit-level=low
+      # From the workspace, not the root: the root script would take --pre-release as an npm flag, not vsce's.
+      - name: Package
+        working-directory: hosts/vscode
+        env:
+          PRE_RELEASE: ${{ inputs.pre-release }}
+        run: |
+          if [ "$PRE_RELEASE" = true ]; then set -- --pre-release; fi
+          npm run package -- "$@"
+
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: vsix
+          path: hosts/vscode/*.vsix
+          if-no-files-found: error
+          retention-days: 30
+
+  integration:
+    name: Extension (integration in a real VS Code)
+    # Opens VS Code at the minimum engines.vscode version, with the extension under development, on a copy of
+    # fixtures/demo-project, and runs hosts/vscode/src/integration/suite.ts. No display on the runner: xvfb-run.
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.ref }}
+          persist-credentials: false
+
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .nvmrc
+          cache: ${{ !inputs.ref && 'npm' || '' }}
+          cache-dependency-path: package-lock.json
+
+      - run: npm ci --ignore-scripts
+      - name: VS Code version (engines.vscode)
+        id: vscode
+        run: echo "version=$(node -p "require('./hosts/vscode/package.json').engines.vscode")" >> "$GITHUB_OUTPUT"
+      # The downloaded VS Code (~150 MB) is cached per version, except when release.yml calls this workflow.
+      - if: ${{ !inputs.ref }}
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: hosts/vscode/.vscode-test/vscode-*
+          key: vscode-test-${{ runner.os }}-${{ steps.vscode.outputs.version }}
+      - run: command -v xvfb-run || (sudo apt-get update && sudo apt-get install -y xvfb)
+      - run: xvfb-run -a npm run test:integration
+
+  plugin-sh:
+    name: Plugin (sh suites, ${{ matrix.os }})
+    # On Ubuntu /bin/sh is dash and awk is mawk; on macOS, bash as sh and the
+    # BSD awk. The script suites (core and adapter) also run the ones for check.sh and the context hook.
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-26, ubuntu-24.04]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.ref }}
+          persist-credentials: false
+      - name: jq
+        run: |
+          command -v jq && exit 0
+          if [ "$RUNNER_OS" = macOS ]; then brew install jq
+          else sudo apt-get update && sudo apt-get install -y jq; fi
+      - run: sh core/scripts/tests/run.sh
+      - run: sh agents/claude-code/agent-scripts/tests/run.sh
+      - run: sh core/template/tests/run.sh
+      - run: sh tools/tests/build.sh
+      # Every translatable text has its pair in the other language, with the same markers.
+      - name: Language parity
+        run: sh tools/tests/languages.sh
+      # Each package has a single version across all manifests; the suite proves the red on a copy.
+      - name: Versions per package
+        run: sh tools/tests/versions.sh
+      # The release.yml logic: info, CHANGELOG notes and the GitHub Release with a fake gh.
+      - name: Tag release
+        run: sh tools/tests/release.sh
+      # The plugins versioned in dist/claude-code/ and dist/claude-code-en/ must be the build of core/ + agents/claude-code/.
+      - name: Generated plugin up to date
+        run: sh tools/build.sh --check
+      # The core/i18n texts and core/template/header.awk embedded in the scripts.
+      - name: Script strings up to date
+        run: sh tools/script-strings.sh --check
+      # One reader and one writer of the task header: no Status: reader outside the generated block.
+      - name: Single header reader
+        run: sh tools/tests/header.sh
+      # pt-BR text in the Brazilian second person: no pt-PT form in core/, agents/claude-code/, hosts/vscode/, the root documents and .github/.
+      - name: pt-BR text
+        run: sh tools/tests/pt-br.sh --self-test
+      # No pointer to a document that is not in the repository (decision by number, task ID, spec/…).
+      - name: No internal pointers
+        run: sh tools/tests/internal-pointers.sh --self-test
+      # No Portuguese in the tests and in the integration run (identifiers, comments, error messages); pt-BR texts the tests expect are data.
+      - name: No Portuguese in the tests
+        run: sh tools/tests/no-pt-in-tests.sh --self-test
+      # No Portuguese in the production code: identifiers, literals and comments of core/ and hosts/vscode/src/, the string-table keys, the issue-form ids.
+      - name: No Portuguese in the code
+        run: sh tools/tests/no-pt-in-code.sh --self-test
+      # The English package gate proves its red on a planted pt-BR script and placeholder.
+      - name: No pt-BR in the English package
+        run: sh tools/tests/no-pt-in-en.sh --self-test
+      # Every run: of this file is in the "CI gates" list of docs/development.md, and back.
+      - name: CI gates listed
+        run: sh tools/tests/gates.sh --self-test
+      # Contract 1 (core/contract/contract.md): the conformance suite only needs jq; the
+      # validation against core/contract/schema/ uses the extension's devDependencies ajv.
+      # --self-test runs the suite on the template status.sh and proves it fails on broken copies.
+      - name: Contract conformance
+        run: sh core/contract/conformance/run.sh --self-test core/template/status.sh
+      # The six verbs of task.sh against the edit cases and the reasons table,
+      # with the same self-test on broken copies.
+      - name: Contract edit cases
+        run: sh core/contract/conformance/edit.sh --self-test core/template/task.sh
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .nvmrc
+          cache: ${{ !inputs.ref && 'npm' || '' }}
+          cache-dependency-path: package-lock.json
+      - run: npm ci --ignore-scripts
+      - name: JSON Schema (status.sh --json, check.sh --json, plan.json)
+        run: sh core/contract/conformance/validate.sh core/template/status.sh dist/claude-code/scripts/check.sh
+
+  shellcheck:
+    name: Shellcheck (every versioned .sh)
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.ref }}
+          persist-credentials: false
+      # A fixed version, not the one the runner image brings: a new warning in a new image does not break CI.
+      - name: Linters at fixed versions
+        run: |
+          sh tools/ci-tools.sh "$RUNNER_TEMP/bin" shellcheck
+          echo "$RUNNER_TEMP/bin" >> "$GITHUB_PATH"
+      # A shellcheck that stopped checking (wrong path, empty file list) would be green: prove the red on a planted SC2086.
+      - run: sh tools/tests/shellcheck.sh --self-test
+      - run: sh tools/tests/shellcheck.sh
+
+  workflows:
+    name: Workflows (actionlint, zizmor)
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.ref }}
+          persist-credentials: false
+      # shellcheck too: actionlint runs it over every run: block it finds on the PATH.
+      - name: Linters at fixed versions
+        run: |
+          sh tools/ci-tools.sh "$RUNNER_TEMP/bin" shellcheck actionlint zizmor
+          echo "$RUNNER_TEMP/bin" >> "$GITHUB_PATH"
+      - run: actionlint
+      # --offline: the audits that need the GitHub API (impostor commits, known-vulnerable actions) are left out,
+      # so the job needs no token; Dependabot keeps the pinned SHAs current.
+      - run: zizmor --offline .github/workflows
+
+  links:
+    name: Links (local, offline)
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.ref }}
+          persist-credentials: false
+      - name: Linters at fixed versions
+        run: |
+          sh tools/ci-tools.sh "$RUNNER_TEMP/bin" lychee
+          echo "$RUNNER_TEMP/bin" >> "$GITHUB_PATH"
+      - run: sh tools/tests/links.sh
+
+  plugin-validate:
+    name: Plugin (claude plugin validate)
+    # validate only reads the manifests and folders: it needs no login or API key.
+    runs-on: ubuntu-24.04
+    env:
+      CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC: '1'
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.ref }}
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .nvmrc
+      # The CLI comes from its own lockfile (tools/claude-cli/), with integrity checks and no install
+      # scripts; Dependabot bumps it. A pinned version: a new --strict warning in a new version does not
+      # break CI without a change in the repository. Its install script only links the platform's native
+      # binary over a stub, so the job puts that binary's folder on the PATH instead.
+      - run: npm ci --ignore-scripts --prefix tools/claude-cli
+      - name: Claude Code on the PATH
+        run: echo "$GITHUB_WORKSPACE/tools/claude-cli/node_modules/@anthropic-ai/claude-code-linux-x64" >> "$GITHUB_PATH"
+      - run: claude --version
+      - name: Marketplace
+        run: claude plugin validate --strict .
+      - name: Plugin
+        run: claude plugin validate --strict dist/claude-code
+      - name: English plugin
+        run: claude plugin validate --strict dist/claude-code-en

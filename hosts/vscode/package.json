@@ -1,0 +1,298 @@
+{
+  "name": "plan-relay",
+  "displayName": "Plan Relay",
+  "description": "%extension.description%",
+  "version": "0.1.0",
+  "publisher": "saboyafelipe",
+  "license": "MIT",
+  "icon": "media/icon.png",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/saboyafelipe/plan-relay.git"
+  },
+  "homepage": "https://github.com/saboyafelipe/plan-relay#readme",
+  "bugs": {
+    "url": "https://github.com/saboyafelipe/plan-relay/issues"
+  },
+  "keywords": [
+    "agents",
+    "ai agents",
+    "claude code",
+    "coding agent",
+    "plans",
+    "planning",
+    "tasks",
+    "task tracking",
+    "autopilot",
+    "markdown"
+  ],
+  "engines": {
+    "vscode": "^1.106.0"
+  },
+  "categories": [
+    "AI",
+    "Visualization"
+  ],
+  "main": "./dist/extension.js",
+  "activationEvents": [
+    "workspaceContains:agent_plans/*/plan.json",
+    "workspaceContains:agent_plans"
+  ],
+  "capabilities": {
+    "untrustedWorkspaces": {
+      "supported": false,
+      "description": "%extension.untrustedWorkspaces%"
+    },
+    "virtualWorkspaces": false,
+    "agentsWindow": {
+      "supported": true
+    }
+  },
+  "contributes": {
+    "viewsContainers": {
+      "secondarySidebar": [
+        {
+          "id": "plan-relay",
+          "title": "Plan Relay",
+          "icon": "media/icon.svg"
+        }
+      ]
+    },
+    "views": {
+      "plan-relay": [
+        {
+          "type": "webview",
+          "id": "planRelay.panel",
+          "name": "Plan Relay"
+        }
+      ]
+    },
+    "commands": [
+      {
+        "command": "planRelay.show",
+        "title": "%command.show%",
+        "category": "Plan Relay"
+      },
+      {
+        "command": "planRelay.refresh",
+        "title": "%command.refresh%",
+        "category": "Plan Relay",
+        "icon": "$(refresh)"
+      },
+      {
+        "command": "planRelay.collapseAll",
+        "title": "%command.collapseAll%",
+        "category": "Plan Relay",
+        "icon": "$(collapse-all)"
+      },
+      {
+        "command": "planRelay.filter",
+        "title": "%command.filter%",
+        "category": "Plan Relay",
+        "icon": "$(search)"
+      },
+      {
+        "command": "planRelay.installPlugin",
+        "title": "%command.installPlugin%",
+        "category": "Plan Relay"
+      },
+      {
+        "command": "planRelay.uninstallPlugin",
+        "title": "%command.uninstallPlugin%",
+        "category": "Plan Relay"
+      },
+      {
+        "command": "planRelay.pluginStatus",
+        "title": "%command.pluginStatus%",
+        "category": "Plan Relay"
+      },
+      {
+        "command": "planRelay.windowGate",
+        "title": "%command.windowGate%",
+        "category": "Plan Relay"
+      },
+      {
+        "command": "planRelay.map",
+        "title": "%command.map%",
+        "category": "Plan Relay"
+      }
+    ],
+    "keybindings": [
+      {
+        "command": "planRelay.filter",
+        "key": "ctrl+f",
+        "mac": "cmd+f",
+        "when": "focusedView == planRelay.panel"
+      }
+    ],
+    "menus": {
+      "commandPalette": [
+        {
+          "command": "planRelay.collapseAll",
+          "when": "view.planRelay.panel.visible && planRelay.tab == plans"
+        },
+        {
+          "command": "planRelay.filter",
+          "when": "view.planRelay.panel.visible"
+        },
+        {
+          "command": "planRelay.map",
+          "when": "resourceExtname == .md && isWorkspaceTrusted && !(resourcePath =~ /[\\\\/]agent_plans[\\\\/]/)"
+        }
+      ],
+      "view/title": [
+        {
+          "command": "planRelay.collapseAll",
+          "when": "view == planRelay.panel && planRelay.tab == plans",
+          "group": "navigation@1"
+        },
+        {
+          "command": "planRelay.filter",
+          "when": "view == planRelay.panel",
+          "group": "navigation@2"
+        },
+        {
+          "command": "planRelay.refresh",
+          "when": "view == planRelay.panel",
+          "group": "navigation@3"
+        },
+        {
+          "command": "planRelay.pluginStatus",
+          "when": "view == planRelay.panel",
+          "group": "planRelay@1"
+        },
+        {
+          "command": "planRelay.installPlugin",
+          "when": "view == planRelay.panel",
+          "group": "planRelay@2"
+        },
+        {
+          "command": "planRelay.uninstallPlugin",
+          "when": "view == planRelay.panel",
+          "group": "planRelay@3"
+        },
+        {
+          "command": "planRelay.windowGate",
+          "when": "view == planRelay.panel",
+          "group": "planRelay@4"
+        }
+      ],
+      "explorer/context": [
+        {
+          "command": "planRelay.map",
+          "when": "resourceExtname == .md && isWorkspaceTrusted && !(resourcePath =~ /[\\\\/]agent_plans[\\\\/]/)",
+          "group": "planRelay@1"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "Plan Relay",
+      "properties": {
+        "planRelay.refreshIntervalMinutes": {
+          "type": "number",
+          "default": 5,
+          "minimum": 0,
+          "description": "%setting.refreshIntervalMinutes%"
+        },
+        "planRelay.notifications.taskStarted": {
+          "type": "boolean",
+          "default": true,
+          "description": "%setting.notifications.taskStarted%"
+        },
+        "planRelay.notifications.taskCompleted": {
+          "type": "boolean",
+          "default": true,
+          "description": "%setting.notifications.taskCompleted%"
+        },
+        "planRelay.notifications.runOpened": {
+          "type": "boolean",
+          "default": false,
+          "description": "%setting.notifications.runOpened%"
+        },
+        "planRelay.notifications.runClosed": {
+          "type": "boolean",
+          "default": true,
+          "description": "%setting.notifications.runClosed%"
+        },
+        "planRelay.notifications.handoff": {
+          "type": "boolean",
+          "default": true,
+          "description": "%setting.notifications.handoff%"
+        },
+        "planRelay.notifications.taskWaitingOnOwner": {
+          "type": "boolean",
+          "default": true,
+          "description": "%setting.notifications.taskWaitingOnOwner%"
+        },
+        "planRelay.notifications.taskCancelled": {
+          "type": "boolean",
+          "default": true,
+          "description": "%setting.notifications.taskCancelled%"
+        },
+        "planRelay.notifications.taskAbandoned": {
+          "type": "boolean",
+          "default": true,
+          "description": "%setting.notifications.taskAbandoned%"
+        },
+        "planRelay.notifications.durationSeconds": {
+          "type": "number",
+          "default": 6,
+          "minimum": 2,
+          "description": "%setting.notifications.durationSeconds%"
+        },
+        "planRelay.notifications.sound": {
+          "type": "string",
+          "enum": [
+            "off",
+            "attention",
+            "all"
+          ],
+          "default": "off",
+          "description": "%setting.notifications.sound%",
+          "enumDescriptions": [
+            "%setting.notifications.sound.off%",
+            "%setting.notifications.sound.attention%",
+            "%setting.notifications.sound.all%"
+          ]
+        },
+        "planRelay.claudePath": {
+          "type": "string",
+          "default": "",
+          "scope": "machine",
+          "description": "%setting.claudePath%"
+        },
+        "planRelay.marketplace": {
+          "type": "string",
+          "default": "",
+          "scope": "machine",
+          "description": "%setting.marketplace%"
+        }
+      }
+    }
+  },
+  "scripts": {
+    "build": "node esbuild.mjs",
+    "watch": "node esbuild.mjs --watch",
+    "test:integration": "node esbuild.mjs && node esbuild.mjs --integration && node out/integration/run-tests.js",
+    "vscode:prepublish": "node esbuild.mjs --production",
+    "package": "vsce package --no-dependencies"
+  },
+  "devDependencies": {
+    "@plan-relay/i18n": "0.0.0",
+    "@plan-relay/panel": "0.0.0",
+    "@plan-relay/reader": "0.0.0",
+    "@types/node": "^22.20.5",
+    "@types/vscode": "~1.106.1",
+    "@vitest/coverage-v8": "5.1.0",
+    "@vscode/test-electron": "^3.1.0",
+    "@vscode/vsce": "^4.1.1",
+    "ajv": "^8.20.0",
+    "esbuild": "^0.28.2",
+    "eslint": "^10.15.0",
+    "prettier": "^3.10.1",
+    "typescript": "npm:@typescript/typescript6@^6.0.2",
+    "typescript-7": "npm:typescript@^7.0.2",
+    "typescript-eslint": "^8.72.2",
+    "vitest": "^5.1.0"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  // Runs in the extension host (Node): no DOM.
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "composite": true,
+    "emitDeclarationOnly": true,
+    "rootDir": "src",
+    "outDir": "out/host",
+    "tsBuildInfoFile": "out/host.tsbuildinfo",
+    "lib": ["ES2022"],
+    "types": ["node", "vscode"]
+  },
+  "include": ["src/**/*.ts"],
+  "exclude": ["src/webview/**", "src/**/*.test.ts"],
+  "references": [{ "path": "../../core/i18n" }, { "path": "../../core/reader" }, { "path": "../../core/panel" }]
+}

@@ -1,0 +1,9 @@
+{
+  "name": "{{PLUGIN_NAME}}",
+  "version": "0.1.0",
+  "description": "Map a document into tasks and drive the plan, one task per session.",
+  "author": {
+    "name": "Felipe Saboya"
+  },
+  "license": "MIT"
+}

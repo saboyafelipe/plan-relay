@@ -1,0 +1,42 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/saboyafelipe/plan-relay/main/core/contract/schema/check.schema.json",
+  "title": "check.sh --json (contract 1)",
+  "description": "Environment check of the plugin. Check order is stable; new check ids may appear and consumers ignore the ones they do not know. See core/contract/contract.md.",
+  "type": "object",
+  "required": ["ok", "checks"],
+  "properties": {
+    "ok": {
+      "description": "true when no check with required=true has a status other than ok.",
+      "type": "boolean"
+    },
+    "checks": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/check" }
+    }
+  },
+  "additionalProperties": true,
+  "$defs": {
+    "check": {
+      "type": "object",
+      "required": ["id", "status", "required", "detail"],
+      "properties": {
+        "id": {
+          "description": "Known ids: jq, git, os, shell, agent-cli, agent-auth, plugin, plugin-current. Others may appear; consumers ignore the ones they do not know.",
+          "type": "string",
+          "minLength": 1
+        },
+        "status": {
+          "description": "ok; missing (not there); warning (there, with a caveat); unknown (cannot be known here, never an error).",
+          "enum": ["ok", "missing", "warning", "unknown"]
+        },
+        "required": { "type": "boolean" },
+        "detail": {
+          "description": "Text for people; on missing/warning it says how to fix it. Not meant to be parsed.",
+          "type": "string"
+        }
+      },
+      "additionalProperties": true
+    }
+  }
+}

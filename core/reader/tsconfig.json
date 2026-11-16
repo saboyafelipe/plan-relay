@@ -1,0 +1,14 @@
+{
+  // Host-free; `src/node.ts` (and the test fixture) bring the Node implementation, hence the Node types.
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "composite": true,
+    "emitDeclarationOnly": true,
+    "rootDir": "src",
+    "outDir": "out/src",
+    "types": ["node"]
+  },
+  "include": ["src/**/*.ts"],
+  "exclude": ["src/**/*.test.ts"],
+  "references": [{ "path": "../i18n" }]
+}

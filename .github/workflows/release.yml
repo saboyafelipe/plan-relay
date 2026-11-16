@@ -1,0 +1,177 @@
+# Tag release. A package's tag publishes that package, with no manual step:
+#
+#   vscode-vX.Y.Z       checks the version, runs the whole CI at the tag (ci.yml, which also
+#                       packages the .vsix), creates the GitHub Release with the .vsix and the notes
+#                       from hosts/vscode/CHANGELOG.md, publishes to Open VSX and the Visual Studio
+#                       Marketplace. An odd minor ships as a pre-release.
+#   claude-code-vX.Y.Z  checks the version, runs the whole CI at the tag and creates the GitHub
+#                       Release with the notes from the root CHANGELOG.md. The plugin is distributed
+#                       through the git marketplace, which reads the repository at the tag: there is
+#                       no store and no attachment.
+#
+# Nothing publishes before the CI job is green: it is the same workflow as pushes and pull requests
+# (workflow_call), checked out at the tag, so a release passes every gate on the code it ships.
+#
+# Redoing a publication that failed halfway: run this workflow by hand (workflow_dispatch) on the
+# tag, with the same tag as input (the `release` environment checks the ref the run started on). Each store skips the version it already has (--skip-duplicate) and the existing
+# GitHub Release only gets the .vsix again; the steps are in docs/development.md, "Publish a version".
+#
+# Authentication, with no stored token for the Marketplace:
+#   Marketplace  Trusted Publishing through OIDC (vsce publish --oidc). The publisher has a policy
+#                with the owner and the repository name, this file (release.yml) and the
+#                `release` environment. It replaces the global Azure DevOps PAT.
+#   Open VSX     the OVSX_PAT secret of the `release` environment; without it, ovsx exchanges the
+#                job's OIDC token (Open VSX trusted publishing), if the namespace has the
+#                trusted publisher registered.
+# The jobs that hold those credentials install vsce and ovsx from their own small lockfile
+# (tools/publish/), with no install scripts, instead of the workspace's development dependencies.
+# The logic lives in tools/release.sh (tested by tools/tests/release.sh); the YAML only calls it.
+
+name: Release
+
+on:
+  push:
+    tags: ['vscode-v*', 'claude-code-v*']
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Tag to publish again (vscode-vX.Y.Z or claude-code-vX.Y.Z); what already shipped is skipped'
+        required: true
+        type: string
+
+permissions: {}
+
+concurrency:
+  group: release-${{ inputs.tag || github.ref_name }}
+  cancel-in-progress: false
+
+env:
+  TAG: ${{ inputs.tag || github.ref_name }}
+
+jobs:
+  check:
+    name: Check the tag and the notes
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+    outputs:
+      package: ${{ steps.info.outputs.package }}
+      version: ${{ steps.info.outputs.version }}
+      pre_release: ${{ steps.info.outputs.pre_release }}
+      vsix: ${{ steps.info.outputs.vsix }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: refs/tags/${{ env.TAG }}
+          persist-credentials: false
+      # Rejects a malformed tag or one whose version differs from the manifests (tools/versions.sh --tag).
+      - id: info
+        run: sh tools/release.sh info "$TAG" >> "$GITHUB_OUTPUT"
+      # Refuses before publishing when the CHANGELOG has no section for the version.
+      - run: sh tools/release.sh notes "$TAG"
+
+  # The CI at the tag, for both packages; its extension job uploads the .vsix (artifact "vsix").
+  ci:
+    name: CI
+    needs: check
+    permissions:
+      contents: read
+    uses: ./.github/workflows/ci.yml
+    with:
+      ref: refs/tags/${{ inputs.tag || github.ref_name }}
+      pre-release: ${{ needs.check.outputs.pre_release == 'true' }}
+
+  github:
+    name: GitHub Release
+    needs: [check, ci]
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+      id-token: write # the signing certificate of the attestation
+      attestations: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: refs/tags/${{ env.TAG }}
+          persist-credentials: false
+      - if: needs.check.outputs.package == 'vscode'
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: vsix
+      # Build provenance of the .vsix: `gh attestation verify` proves it came from this workflow, at
+      # this tag. Attestations need a public repository (or Enterprise Cloud), so a private one skips it.
+      - if: needs.check.outputs.package == 'vscode' && !github.event.repository.private
+        uses: actions/attest@1e69f48acb82d1966a394da916b4c1698aa569d6 # v4.2.2
+        with:
+          subject-path: ${{ needs.check.outputs.vsix }}
+      - name: Create the release (or reattach the .vsix)
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VSIX: ${{ needs.check.outputs.vsix }}
+        run: sh tools/release.sh github "$TAG" "$VSIX"
+
+  marketplace:
+    name: Visual Studio Marketplace
+    needs: [check, ci]
+    if: needs.check.outputs.package == 'vscode'
+    runs-on: ubuntu-24.04
+    environment: release
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: refs/tags/${{ env.TAG }}
+          persist-credentials: false
+      # No cache in a job that publishes: it would restore what an earlier run of any branch wrote.
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .nvmrc
+          cache: '' # zizmor: ignore[cache-poisoning] empty, and no automatic cache below: nothing is restored
+          package-manager-cache: false
+      - run: npm ci --ignore-scripts --prefix tools/publish
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: vsix
+      # --pre-release with --packagePath only checks that the .vsix was packaged as a pre-release.
+      - name: Publish
+        env:
+          VSIX: ${{ needs.check.outputs.vsix }}
+          PRE_RELEASE: ${{ needs.check.outputs.pre_release }}
+        run: |
+          if [ "$PRE_RELEASE" = true ]; then set -- --pre-release; fi
+          tools/publish/node_modules/.bin/vsce publish --oidc --packagePath "$VSIX" --skip-duplicate "$@"
+
+  openvsx:
+    name: Open VSX
+    needs: [check, ci]
+    if: needs.check.outputs.package == 'vscode'
+    runs-on: ubuntu-24.04
+    environment: release
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: refs/tags/${{ env.TAG }}
+          persist-credentials: false
+      # No cache in a job that publishes: it would restore what an earlier run of any branch wrote.
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .nvmrc
+          cache: '' # zizmor: ignore[cache-poisoning] empty, and no automatic cache below: nothing is restored
+          package-manager-cache: false
+      - run: npm ci --ignore-scripts --prefix tools/publish
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: vsix
+      - name: Publish
+        env:
+          OVSX_PAT: ${{ secrets.OVSX_PAT }}
+          VSIX: ${{ needs.check.outputs.vsix }}
+          PRE_RELEASE: ${{ needs.check.outputs.pre_release }}
+        run: |
+          if [ "$PRE_RELEASE" = true ]; then set -- --pre-release; fi
+          tools/publish/node_modules/.bin/ovsx publish "$VSIX" --skip-duplicate "$@"
