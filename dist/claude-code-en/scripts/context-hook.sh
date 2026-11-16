@@ -131,9 +131,11 @@ case $limit in ''|0*|*[!0-9]*) limit=150000 ;; esac
 # the objects nested inside it do not matter; a line cut by tail or not JSON is skipped.
 # Without jq, the first } ends the usage, which holds while the three counters come before
 # any nested object.
+# A jq that dies before reading all of it leaves tail writing into a closed pipe: with SIGPIPE
+# ignored (some CI runners) tail reports EPIPE on stderr, which a hook must keep silent.
 total=
 if command -v jq >/dev/null 2>&1; then
-  total=$(tail -n 400 "$transcript" | jq -R -r 'fromjson? | .message.usage? | select(type == "object")
+  total=$(tail -n 400 "$transcript" 2>/dev/null | jq -R -r 'fromjson? | .message.usage? | select(type == "object")
     | (.input_tokens // 0) + (.cache_creation_input_tokens // 0) + (.cache_read_input_tokens // 0)' 2>/dev/null | tail -n 1)
 fi
 case $total in ''|*[!0-9]*)

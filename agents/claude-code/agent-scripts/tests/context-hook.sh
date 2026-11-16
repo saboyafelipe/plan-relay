@@ -136,6 +136,17 @@ s=$(multi s-sed | PATH="$tmp/fakejq:$PATH" CLAUDE_PLUGIN_DATA="$tmp/d10" PLAN_RE
 check "JSON on several lines (sed) → session read right" "$(ls "$tmp/d10")" "context-s-sed-over-0"
 check "no working jq → nothing on stderr" "$(cat "$tmp/err")" ""
 check "no working jq → the warning comes out as valid JSON" "$(printf '%s\n' "$s" | jq -r '.hookSpecificOutput.hookEventName')" "PostToolUse"
+# The same jq, which exits without reading its input, with SIGPIPE ignored (as on some CI
+# runners) and a transcript whose last 400 lines exceed a pipe buffer: the writer into the
+# pipe is still writing after the reader is gone, every time, and gets EPIPE.
+big="$tmp/transcript-big.jsonl"
+awk 'BEGIN { s = sprintf("%500s", ""); gsub(/ /, "x", s)
+  for (i = 0; i < 400; i++) printf "{\"type\":\"user\",\"message\":{\"content\":\"%s\"}}\n", s }' > "$big"
+printf '{"type":"assistant","message":{"usage":{"input_tokens":1200,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"output_tokens":5}}}\n' >> "$big"
+bigin() { printf '{"session_id":"s-epipe","transcript_path":"%s","cwd":"%s"}\n' "$big" "$proj"; }
+s=$( (trap '' PIPE; bigin | PATH="$tmp/fakejq:$PATH" CLAUDE_PLUGIN_DATA="$tmp/d10p" PLAN_RELAY_CONTEXT_LIMIT=1000 sh "$hook_sh") 2>"$tmp/err-epipe")
+check "jq exits unread, SIGPIPE ignored → nothing on stderr" "$(cat "$tmp/err-epipe")" ""
+check "jq exits unread, SIGPIPE ignored → the warning still comes out" "$(printf '%s\n' "$s" | grep -c additionalContext)" "1"
 s=$(input "$noplan" | PATH="$tmp/fakejq:$PATH" CLAUDE_PLUGIN_DATA="$tmp/d10s" PLAN_RELAY_CONTEXT_LIMIT=1000 sh "$hook_sh" 2>&1; printf 'rc=%s' $?)
 check "no jq and no agent_plans/ → exit code 0 and silence" "$s" "rc=0"
 
