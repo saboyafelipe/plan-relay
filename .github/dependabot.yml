@@ -5,6 +5,9 @@
 #   The development ones go in one PR grouped per week. The "typescript" →
 #   @typescript/typescript6 alias exists because typescript-eslint does not accept TypeScript 7 yet;
 #   once it does, the alias goes away (docs/development.md).
+#   Ignored: @types/vscode, which must not be newer than engines.vscode (vsce package refuses), and
+#   the majors of @types/node, which follows the Node.js inside that minimum VS Code. Both are
+#   raised by hand together with engines.vscode (docs/development.md, "Integration test").
 # - npm at /tools/publish: the lockfile of vsce and ovsx, the only packages the publishing jobs of
 #   release.yml install. Both are exact versions; one PR per week for the two.
 # - npm at /tools/claude-cli: the lockfile of the Claude Code CLI that the plugin-validate job of
@@ -25,6 +28,10 @@ updates:
     groups:
       development:
         dependency-type: development
+    ignore:
+      - dependency-name: '@types/vscode'
+      - dependency-name: '@types/node'
+        update-types: ['version-update:semver-major']
 
   - package-ecosystem: npm
     directory: /tools/publish

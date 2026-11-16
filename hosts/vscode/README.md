@@ -10,6 +10,7 @@ A VS Code panel for the work plans that coding agents run task by task. The exte
 
 ## Requirements
 
+- **VS Code 1.146 or newer.**
 - **Claude Code** with the `plan-relay` plugin. The panel offers to install the plugin when it is missing ("Plan Relay: Install the plugin" command).
 - **`jq`** on the PATH. The panel footer warns you when it is missing.
 - **On Windows,** Git Bash or WSL: the plan scripts are `sh`.
