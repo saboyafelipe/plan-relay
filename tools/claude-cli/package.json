@@ -4,6 +4,6 @@
   "description": "The Claude Code CLI of the plugin-validate CI job, locked apart from the workspace so CI installs it with npm ci --ignore-scripts and an integrity check.",
   "license": "MIT",
   "dependencies": {
-    "@anthropic-ai/claude-code": "2.1.325"
+    "@anthropic-ai/claude-code": "2.1.329"
   }
 }
